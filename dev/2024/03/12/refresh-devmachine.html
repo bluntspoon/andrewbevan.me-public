@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Refreshing My Development Machine 💻 | Andrew Bevan</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Refreshing My Development Machine 💻" />
+<meta name="author" content="Andrew Bevan" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A complete refresh of my daily driver development laptop with hardware upgrades and a clean Windows 11 installation." />
+<meta property="og:description" content="A complete refresh of my daily driver development laptop with hardware upgrades and a clean Windows 11 installation." />
+<meta property="og:site_name" content="Andrew Bevan" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-03-12T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Refreshing My Development Machine 💻" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Andrew Bevan"},"dateModified":"2024-03-12T00:00:00+00:00","datePublished":"2024-03-12T00:00:00+00:00","description":"A complete refresh of my daily driver development laptop with hardware upgrades and a clean Windows 11 installation.","headline":"Refreshing My Development Machine 💻","mainEntityOfPage":{"@type":"WebPage","@id":"/dev/2024/03/12/refresh-devmachine.html"},"url":"/dev/2024/03/12/refresh-devmachine.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css?1772880792640842659"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Andrew Bevan" /><script async src="https://www.googletagmanager.com/gtag/js?id=G-VTF49EX4MD"></script>
+<script>
+  window['ga-disable-G-VTF49EX4MD'] = window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){window.dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VTF49EX4MD');
+</script>
+<!-- Icons and Theme -->
+<link rel="shortcut icon" href="https://andrewbevan.me/assets/css/icons/favicon.ico?1772880792640842659">
+<link rel="icon" type="image/png" sizes="16x16" href="https://andrewbevan.me/assets/css/icons/favicon-16x16.png?1772880792640842659">
+<link rel="icon" type="image/png" sizes="32x32" href="https://andrewbevan.me/assets/css/icons/favicon-32x32.png?1772880792640842659">
+<link rel="apple-touch-icon" sizes="180x180" href="https://andrewbevan.me/assets/css/icons/apple-touch-icon.png?1772880792640842659">
+<link rel="mask-icon" href="https://andrewbevan.me/assets/css/icons/safari-pinned-tab.svg?1772880792640842659" color="#5bbad5">
+<link rel="manifest" href="https://andrewbevan.me/assets/css/icons/site.webmanifest?1772880792640842659">
+<meta name="msapplication-config" content="https://andrewbevan.me/assets/css/icons/browserconfig.xml?1772880792640842659">
+<meta name="msapplication-TileColor" content="#00aba9">
+<meta name="theme-color" content="#ffffff">
+
+
+<!-- Navigation Enhancement Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Mobile dropdown toggle - using $on-medium breakpoint (600px)
+  const MOBILE_BREAKPOINT = 600; // Matches $on-medium in minima theme
+  const dropdowns = document.querySelectorAll('.site-nav .has-dropdown');
+
+  dropdowns.forEach(function(dropdown) {
+    const link = dropdown.querySelector('.page-link');
+
+    link.addEventListener('click', function(e) {
+      // On mobile/tablet, toggle dropdown instead of following link
+      if (window.innerWidth < MOBILE_BREAKPOINT) {
+        e.preventDefault();
+        dropdown.classList.toggle('open');
+      }
+    });
+  });
+});
+</script>
+</head>
+<body><header class="site-header">
+  <div class="wrapper"><a href="https://andrewbevan.me/" class="circle blue">
+      <img height="30" width="30" src="/assets/css/images/andrew-bevan.png?1772880792640842659" alt="Andrew Bevan">
+    </a>
+    <a class="site-title" rel="author" href="/">Andrew Bevan
+      <span style="font-size: x-small; word-wrap: break-word"> ~ Coding, Technology &amp; Life</span>
+    </a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><div class="has-dropdown">
+                  <a class="page-link" href="/lists/">Lists</a>
+                  <div class="dropdown-menu">
+                    <a href="/lists/books">Books</a>
+                    <a href="/lists/software">Software</a>
+                    <a href="/lists/places">Places</a>
+                  </div>
+                </div><a class="page-link" href="/blog/">Blog</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Refreshing My Development Machine 💻</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2024-03-12T00:00:00+00:00" itemprop="datePublished">
+        12 Mar 2024
+      </time>
+      <div class="post-tags">
+        
+          <a href="/tags/#hardware" class="post-tag">hardware</a>
+        
+          <a href="/tags/#windows" class="post-tag">windows</a>
+        
+          <a href="/tags/#setup" class="post-tag">setup</a>
+        
+          <a href="/tags/#productivity" class="post-tag">productivity</a>
+        
+      </div>
+      </p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody"><img src="/assets/images/featured/default.png"  alt="featured image"  class="featured-image-post"/><blockquote>
+  <p>“A well-maintained development machine is like a well-tuned instrument—it makes creating great software so much more enjoyable.”</p>
+</blockquote>
+
+<p>Every developer knows that feeling when their development machine starts to slow down, accumulate cruft, and just doesn’t feel as snappy as it once did. After years of heavy use, it was time to give my trusty Dell Latitude 5511 some much-needed love.</p>
+
+<h2 id="️-the-specs">🖥️ The Specs</h2>
+
+<p>My daily driver has been a reliable companion:</p>
+<ul>
+  <li><strong>System Model</strong>: Dell Latitude 5511</li>
+  <li><strong>Processor</strong>: Intel Core i7-10850H CPU @ 2.70GHz, 2712 Mhz, 6 Cores, 12 Logical Processors</li>
+  <li><strong>Original RAM</strong>: 32GB (now upgraded to 64GB)</li>
+</ul>
+
+<h2 id="-the-hardware-refresh">🔧 The Hardware Refresh</h2>
+
+<h3 id="memory-upgrade">Memory Upgrade</h3>
+<p>The most significant upgrade was doubling the RAM from 32GB to <strong>64GB</strong>. As a developer working with multiple Visual Studio instances, Docker containers, and various development tools simultaneously, this upgrade has been a game-changer. No more memory pressure warnings, no more closing applications to free up RAM—just smooth, uninterrupted development.</p>
+
+<h3 id="cooling-system-maintenance">Cooling System Maintenance</h3>
+<p>Over time, dust and debris accumulate in laptop cooling systems, leading to higher temperatures and thermal throttling. I took the opportunity to:</p>
+<ul>
+  <li>Thoroughly clean all cooling fans</li>
+  <li>Remove dust from the heatsink fins</li>
+  <li>Replace the thermal paste on the CPU</li>
+</ul>
+
+<p>The difference in thermals has been remarkable. The laptop now runs cooler and quieter, even under heavy compilation workloads.</p>
+
+<h2 id="-the-software-refresh">💾 The Software Refresh</h2>
+
+<h3 id="clean-windows-11-installation">Clean Windows 11 Installation</h3>
+<p>Nothing beats the feeling of a fresh operating system installation. I performed a clean install of <strong>Windows 11</strong>, ensuring I started with a clean slate—no accumulated junk, no orphaned registry entries, just a pristine development environment ready to be configured exactly how I want it.</p>
+
+<h3 id="essential-development-tools">Essential Development Tools</h3>
+<p>After the fresh install, I set up my development environment with all the essentials:</p>
+<ul>
+  <li><strong>Visual Studio 2022</strong> (latest version)</li>
+  <li><strong>Visual Studio Code</strong></li>
+  <li><strong>Git</strong> and related tools</li>
+  <li><strong>Docker Desktop</strong></li>
+  <li><strong>Windows Subsystem for Linux (WSL2)</strong></li>
+  <li>Various SDKs and runtimes (.NET, Node.js, etc.)</li>
+  <li>Development databases (SQL Server, PostgreSQL)</li>
+</ul>
+
+<h2 id="-the-results">🚀 The Results</h2>
+
+<p>The refresh has transformed my development experience:</p>
+<ul>
+  <li><strong>Faster compilation times</strong>: More RAM means better caching and fewer disk swaps</li>
+  <li><strong>Better multitasking</strong>: Running multiple dev environments without performance degradation</li>
+  <li><strong>Cooler and quieter operation</strong>: The cooling system maintenance made a huge difference</li>
+  <li><strong>Improved responsiveness</strong>: Fresh OS install eliminated all the accumulated bloat</li>
+  <li><strong>Better stability</strong>: No more mysterious crashes or sluggish behavior</li>
+</ul>
+
+<h2 id="-lessons-learned">💡 Lessons Learned</h2>
+
+<ol>
+  <li><strong>Don’t wait too long</strong>: Regular maintenance is easier than a major overhaul</li>
+  <li><strong>RAM matters</strong>: For development work, you can never have too much RAM</li>
+  <li><strong>Clean installations are worth it</strong>: The time invested in setup pays dividends in performance</li>
+  <li><strong>Document your setup</strong>: Keep a list of tools and configurations for easy restoration</li>
+</ol>
+
+<h2 id="looking-forward">Looking Forward</h2>
+
+<p>With this refreshed machine, I’m ready to tackle the next wave of development challenges. The performance boost has already improved my productivity and made coding more enjoyable. Sometimes, the best way to move forward is to take a step back and ensure your tools are in top shape.</p>
+
+<p>If your development machine is feeling sluggish, consider giving it some love. Whether it’s a RAM upgrade, cleaning the cooling system, or a fresh OS install, your future self will thank you!</p>
+
+<hr />
+
+<p><em>Keep your tools sharp, and they’ll serve you well.</em></p>
+
+  </div><a class="u-url" href="/dev/2024/03/12/refresh-devmachine.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <!-- <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg?v=20240116#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <ul class="contact-list">
+          <li class="p-name">Andrew Bevan</li>
+          <li><a class="u-email" href="mailto:bluntspoon@gmail.com">bluntspoon@gmail.com</a></li>
+        </ul>
+      </div>
+    </div> -->
+
+    <div class="social-links"><ul class="social-media-list"><li>
+  <a rel="me" href="https://www.linkedin.com/in/andrew-bevan" target="_blank" title="linkedin">
+    <svg class="svg-icon grey">
+      <use xlink:href="/assets/minima-social-icons.svg?v=20240116#linkedin"></use>
+    </svg>
+  </a>
+</li>
+<li>
+  <a rel="me" href="https://x.com/bluntspoon" target="_blank" title="twitter">
+    <svg class="svg-icon grey">
+      <use xlink:href="/assets/minima-social-icons.svg?v=20240116#twitter"></use>
+    </svg>
+  </a>
+</li>
+<li>
+  <a rel="me" href="https://github.com/bluntspoon" target="_blank" title="github">
+    <svg class="svg-icon grey">
+      <use xlink:href="/assets/minima-social-icons.svg?v=20240116#github"></use>
+    </svg>
+  </a>
+</li>
+</ul>
+</div>
+    <div style="text-align: center; font-style: italic; font-size: smaller;">
+      "Inspired by AI, but entirely my own."
+    </div>
+
+  </div>
+
+</footer>
+</body>
+</html>
