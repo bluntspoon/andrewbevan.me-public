@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>iGaming Design Examples</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0f1419;
+    color: #e6edf3;
+    line-height: 1.55;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    padding: 14px 16px;
+    padding-top: max(14px, env(safe-area-inset-top));
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  header h1 { font-size: 17px; font-weight: 600; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .back-btn {
+    background: #21262d;
+    color: #e6edf3;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    display: none;
+    flex-shrink: 0;
+  }
+  .back-btn:active { background: #30363d; }
+  body.detail .back-btn { display: block; }
+  main { padding: 16px; max-width: 760px; margin: 0 auto; }
+
+  .list { display: flex; flex-direction: column; gap: 12px; }
+  .list-card {
+    background: #1c2128;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .list-card:active { background: #21262d; border-color: #2f81f7; }
+  .list-card .badge {
+    display: inline-block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #2f81f7;
+    background: rgba(47, 129, 247, 0.15);
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .list-card .badge.web { color: #f0883e; background: rgba(240, 136, 62, 0.15); }
+  .list-card .badge.heroes { color: #56d364; background: rgba(86, 211, 100, 0.15); }
+  .list-card h2 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+  .list-card .summary { font-size: 14px; color: #8b949e; }
+
+  .detail-view { display: none; }
+  body.detail .list { display: none; }
+  body.detail .detail-view { display: block; }
+
+  .detail-view h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+  .detail-view .one-liner { color: #8b949e; font-size: 14px; margin-bottom: 20px; font-style: italic; }
+  .detail-view section { margin-bottom: 24px; }
+  .detail-view h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: #2f81f7;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .detail-view h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e6edf3;
+    margin: 14px 0 8px;
+  }
+  .detail-view p { margin-bottom: 8px; font-size: 15px; }
+  .detail-view ul, .detail-view ol { margin: 6px 0 12px 22px; }
+  .detail-view li { margin-bottom: 6px; font-size: 15px; }
+  .detail-view strong { color: #f0f6fc; }
+  .detail-view code {
+    background: #0d1117;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 13px;
+    color: #ffa657;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 14px;
+    font-size: 14px;
+  }
+  th, td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid #30363d;
+    vertical-align: top;
+  }
+  th { color: #8b949e; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  pre.diagram {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 14px;
+    overflow-x: auto;
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #adbac7;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .callout {
+    background: #1a2432;
+    border-left: 3px solid #2f81f7;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  .callout.warn {
+    background: #221c14;
+    border-left-color: #f0883e;
+  }
+  .callout.win {
+    background: #14271a;
+    border-left-color: #56d364;
+    font-weight: 600;
+  }
+
+  .api-list {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #adbac7;
+    margin-bottom: 12px;
+  }
+  .api-list .verb { color: #56d364; font-weight: 600; }
+  .api-list .ws { color: #f0883e; font-weight: 600; }
+  .api-list .note { color: #6e7681; font-size: 12px; }
+
+  .sources {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #30363d;
+    font-size: 13px;
+    color: #8b949e;
+  }
+  .sources a { color: #58a6ff; word-break: break-all; }
+  .sources li { margin-bottom: 4px; font-size: 13px; }
+  .footer { text-align: center; color: #6e7681; padding: 24px 16px; font-size: 13px; }
+</style>
+</head>
+<body>
+<header>
+  <button class="back-btn" id="backBtn">‹ Back</button>
+  <h1 id="title">iGaming Design Examples</h1>
+</header>
+<main>
+  <div class="list" id="list"></div>
+  <div class="detail-view" id="detail"></div>
+  <div class="footer">8 worked designs · Hello-Interview framework · whiteboard-friendly diagrams</div>
+</main>
+
+<script>
+const designs = [
+// =============================================================================
+{
+  id: "leaderboard",
+  badge: "Rehearsed",
+  badgeClass: "heroes",
+  title: "Global Real-Time Tournament Leaderboard",
+  oneLiner: "10M concurrent · sub-second rank updates · multi-region survivable.",
+  summary: "10M concurrent · sub-second updates · multi-region survivable.",
+
+  prompt: "Design a global real-time tournament leaderboard service. Players submit scores, view top-N (typ. 100), view their own rank, and view a window around their rank. Multi-region (EU, NA, APAC), survives loss of a region without losing committed scores. Tournaments range 1K–1M; many concurrent.",
+
+  functional: [
+    "Submit a score (from a game backend)",
+    "View top-N (typ. 100)",
+    "View own rank",
+    "View a window of ranks around own position",
+    "Live updates as ranks change (push)",
+    "Multiple concurrent tournaments of varying size",
+  ],
+
+  nfrs: [
+    ["Concurrent players", "10M peak", "Stated"],
+    ["Score writes", "~330K/sec peak", "10M × 1 score / 30s"],
+    ["Read:write ratio", "~100:1", "Every spectator subscribes"],
+    ["Update latency E2E", "&lt;1s", "Stated"],
+    ["Availability", "99.9%", "Player-facing baseline"],
+    ["Region survivability", "Lossless", "Stated — RPO target needs explicit choice"],
+  ],
+
+  outOfScope: ["Auth", "Payments", "Game services producing scores", "Lobbies / matchmaking"],
+
+  capCall: "Reads are <strong>AP</strong>: a player seeing a rank that's a fraction of a second stale is fine — nobody notices. Writes within one tournament are effectively <strong>CP</strong>: we use a single writer per tournament, so ordering and consistency are local problems, not distributed ones. If the home region dies, we can lose at most a few hundred milliseconds of un-replicated score events (Kafka MirrorMaker is async by default). Switch to sync if a regulator says zero-loss; the cost is added write latency.",
+
+  entities: `Leaderboard          { id, name }
+LeaderboardInstance  { id, leaderboardId, homeRegion, start, end }
+Player               { id, alias }
+PlayerLeaderboard    { instId, playerId, score }   -- rank derived (ZRANK)
+ScoreEvent (event)   { eventId, playerId, instId, score, gameTs, region }`,
+
+  apis: [
+    { method: "POST", path: "/leaderboard/instance/{id}/score", note: "idempotent on EventID header" },
+    { method: "GET",  path: "/leaderboard/instance/{id}/top?n=100" },
+    { method: "GET",  path: "/leaderboard/instance/{id}/player/{playerId}?window=20" },
+    { method: "WS",   path: "/leaderboard/instance/{id}/subscribe", note: "live rank-change deltas" },
+  ],
+
+  writePath: `[Game] ──ScoreEvent──▶ [API] ──▶ [Kafka: partition by instId]
+                                              │
+                                              ▼
+                                       [Writer (1 per partition)]
+                                              │
+                                  ZADD ◄──────┴──────▶ outbox
+                                   │                     │
+                                   ▼                     ▼
+                              [Redis ZSET]         [Postgres]
+                                   │
+                                   ▼
+                            rank-change pub/sub  ──▶ [WS gateways]`,
+  writeNotes: [
+    "We partition Kafka by <code>LeaderboardInstanceId</code>, so every event for the same tournament always lands on the same partition. One Kafka partition has one consumer at a time, so we get strict ordering for free without any distributed lock.",
+    "Kafka delivers at-least-once, meaning a producer crash can resend the same event. The writer dedupes on <code>EventID</code> before applying so we never double-count.",
+    "We update Redis first because that's what players see. Postgres is updated asynchronously via the outbox pattern: we write the score row and an outbox row in the same transaction, and a poller publishes them. This avoids the dual-write problem (writing to two places and one of them failing).",
+  ],
+
+  readPath: `[Game client] ──HTTP──▶ [API] ──▶ [Redis ZSET]
+                                                  │
+                                                  └─ ZRANGE / ZRANK / window
+
+[Game client] ──WebSocket──▶ [WS Gateway tier] ──◀── rank-change pub/sub`,
+  readNotes: [
+    "When a player opens the page, we read directly from Redis. A sorted set lookup (top 100, my rank, window around me) is O(log N) and takes well under a millisecond.",
+    "After page load, the player connects via WebSocket to a separate gateway tier (kept separate from the API because long-lived connections have very different scaling needs from request/response). The gateway is subscribed to a rank-change feed that the writer publishes after every score update.",
+    "Postgres is never on the hot read path. It exists for audit and to rebuild Redis if a region restarts cold.",
+  ],
+
+  topology: `┌── EU (home for tnt-A) ──┐  ┌── NA ──┐  ┌── APAC ──┐
+│ API + WS + Redis        │  │  same  │  │   same   │
+│ Kafka (primary)         │──┤        │──┤          │
+│ Postgres primary        │  │        │  │          │
+└─────────────────────────┘  └────────┘  └──────────┘
+        ▲                                      │
+        └──── MirrorMaker 2 (Kafka topics) ────┘
+        └──── async streaming repl (Postgres) ──┘`,
+  topologyNotes: [
+    "Each tournament gets a home region (typically the one closest to most of its players). All writes for that tournament route there. This keeps the single-writer property even across continents.",
+    "Other regions hold a mirrored Kafka log and a Postgres replica, ready to take over.",
+    "We don't replicate Redis across regions because it's a cache — if a region dies, the new primary rebuilds Redis by replaying Kafka. That takes seconds, not minutes, because each tournament's data is bounded.",
+  ],
+
+  deepDive: {
+    title: "Single writer per tournament + region failover",
+    body: `<p>The hardest thing in distributed systems is two writers fighting over the same piece of state. So we avoid it by design: <strong>each tournament has exactly one writer in the world at any moment.</strong> Every score event for that tournament is routed to that writer.</p>
+
+    <p>The mechanism is just Kafka. We make the partition key the tournament ID. Kafka guarantees that each partition is processed by one consumer at a time, in order. So "single writer per tournament" comes for free — no distributed lock, no leader-elect-per-row.</p>
+
+    <p>This is the same idea I use on Jackpots with Orleans (one grain per pool = one writer per pool). On Orleans the runtime gives you the single-writer property; here, Kafka does. Same invariant, different vehicle. The lesson is: <strong>once you've made each piece of state owned by one writer, ordering and consistency stop being distributed problems.</strong></p>
+
+    <h4>What happens when the home region dies</h4>
+    <ol>
+      <li>Health checks fail. An orchestrator (using etcd or Consul) elects a new primary in a surviving region.</li>
+      <li>The new primary rebuilds Redis from scratch by replaying Kafka from the last checkpoint. This works because each tournament's history is bounded — even a 1M-player tournament replays in tens of seconds.</li>
+      <li>WebSocket clients reconnect to the new region; their subscriptions re-establish.</li>
+      <li><strong>How much data can we lose?</strong> Whatever Kafka MirrorMaker hadn't replicated yet — typically around 100ms with default async settings. Sync replication is available if a regulator demands zero-loss; the cost is higher write latency.</li>
+      <li><strong>How long is the outage?</strong> Leader election takes seconds; Redis replay takes tens of seconds. Comfortably inside a 99.9% SLA.</li>
+    </ol>`,
+  },
+
+  pushbacks: [
+    ["Why not Orleans here too?", "Orleans is great inside one cluster but doesn't have a built-in cross-region coordination story. Kafka partition ownership plus an external leader election (etcd/Consul) is the right tool when single-writer needs to span continents."],
+    ["What if Kafka loses a partition?", "Kafka itself replicates partitions inside a cluster (replication factor of 3+ with the in-sync-replica rule), and MirrorMaker replicates cross-region. So the only way to lose a partition is to lose multiple machines and a region simultaneously, which is well outside our SLA."],
+    ["A tournament with 1M concurrent players is on one partition. Won't that be too hot?", "Yes, that's a known scaling cliff. The escape hatch is to sub-shard within the tournament: partition by <code>(tournamentId, hash(playerId) % N)</code>, run N writers, and merge the top-N at read time. Adds complexity, so we only do it when a tournament approaches the limit — not by default."],
+    ["Why is Postgres asynchronous?", "Redis is the source of truth for ranks at the sub-second level — that's what the player sees. Postgres is the durable audit record. Because we said reads can tolerate a few ms of staleness, we can let Postgres lag without breaking the contract. The outbox pattern still guarantees the row eventually lands."],
+    ["What about idempotency under a retry storm?", "Every event carries an <code>EventID</code>. The writer keeps a sliding window of recent IDs (in Redis with a TTL) and rejects duplicates. So a producer that retries a thousand times causes one apply, not a thousand."],
+  ],
+
+  walkIn: "Single writer per tournament, enforced by Kafka partition ownership; cross-region durability via MirrorMaker; failover by leader election with Redis rebuild from the log. AP on reads, effectively-CP on writes within a partition.",
+
+  sources: [],
+},
+
+// =============================================================================
+{
+  id: "jackpot-contribution",
+  badge: "Hero domain",
+  badgeClass: "heroes",
+  title: "Jackpot Contribution Pipeline",
+  oneLiner: "Every wager contributes to one or more shared pools in real time, with regulator-grade audit.",
+  summary: "1.5B bets/month · second-fresh pool meter · two-phase contribute/claim.",
+
+  prompt: "Design a jackpot-contribution ingestion pipeline. Every wager across many games and operators contributes a percentage to one or more jackpot pools. Display the live pool value within seconds. Some pools span jurisdictions; others must be ring-fenced.",
+
+  functional: [
+    "Accept a wager pre-play, compute contributions per applicable pool, commit before the game runs",
+    "Increase live pool meters in near-real-time",
+    "On a win signal, claim and award the current pool",
+    "Maintain immutable audit of every contribution",
+    "Enforce per-jurisdiction ring-fencing rules",
+  ],
+
+  nfrs: [
+    ["Wager rate", "~600/sec avg, ~6K/sec peak", "1.5B/month"],
+    ["Contribution latency", "&lt;100ms p99 on critical path", "Sits inside spin latency budget"],
+    ["Display freshness", "&lt;2s on the meter", "Player UX"],
+    ["Win-to-credit latency", "&lt;200ms p99", "Felt as instant"],
+    ["Audit retention", "7 years", "Regulator"],
+    ["RPO", "0 on contributions", "Money-equivalent"],
+  ],
+
+  outOfScope: ["Game RNG", "Wallet authority", "Win-selection algorithm"],
+
+  capCall: "Contributions are <strong>CP</strong>: a spin is not allowed to start until its contribution is safely written. We treat the contribution as part of the wager itself — same money, same audit trail. The pool meter the player sees is <strong>AP</strong>: a couple of seconds of staleness on the displayed value is fine. Ring-fencing (some pools may not span jurisdictions) is enforced at the gateway, before contributions even reach the engine, so a misconfigured operator can't pollute the pool.",
+
+  entities: `Pool             { id, name, jurisdictionTags[], rtpPct, seed }
+PoolMeter        { poolId, currentValue, snapshotTs }
+Wager            { id, playerId, gameId, operatorId, amount, ts }
+Contribution     { wagerId, poolId, amount, ts }    -- immutable
+Claim (event)    { wagerId, poolId, awardedAmount, ts }`,
+
+  apis: [
+    { method: "POST", path: "/jackpot/preplay", note: "sync — must commit before spin runs. Idempotent on wagerId." },
+    { method: "POST", path: "/jackpot/claim",  note: "sync — on win signal. Idempotent on wagerId." },
+    { method: "GET",  path: "/jackpot/pool/{id}/meter", note: "live value" },
+    { method: "WS",   path: "/jackpot/pool/{id}/subscribe", note: "meter delta stream" },
+  ],
+
+  writePath: `[Game/RGS] ──preplay(wagerId)──▶ [Gateway: jurisdiction check]
+                                                    │
+                                                    ▼
+                                          [Critical Engine] ── tx ──▶ [SQL AG]
+                                                    │                  (contribution
+                                                    │                   table)
+                                                    │
+                                       publish ◄────┴────▶ outbox
+                                          │
+                                          ▼
+                                       [Kafka: jp-contrib]
+                                          │
+                            ┌─────────────┼──────────────┐
+                            ▼             ▼              ▼
+                     [Pool Grain]   [ClickHouse]   [Stream consumers]
+                    (Orleans, 1/pool)  (audit/BI)`,
+  writeNotes: [
+    "The contribution is written synchronously to SQL Server with a sync replica. That gives us a zero-data-loss guarantee on contributions. The spin only starts after this commits — slower than a fully async path, but it means we never have a played spin without a recorded contribution.",
+    "In the same database transaction we also write an outbox row. A poller publishes that row to Kafka shortly after. This is the standard fix for the dual-write problem (writing to a database and a broker, where one might fail).",
+    "An Orleans grain per pool keeps an in-memory counter for the pool's current value. Incrementing the in-memory value is a few microseconds; we snapshot to SQL every few seconds. The grain is the thing that powers the live meter on the player UI.",
+    "ClickHouse batches contributions in for analytics and long-term audit — it's not on the critical path, so it can lag.",
+  ],
+
+  readPath: `[Player UI] ──HTTP──▶ [API] ──▶ [Pool Grain in-mem]
+                                                │ (cached snapshot)
+
+[Player UI] ──WebSocket──▶ [WS Gateway] ──◀── pool-delta stream`,
+  readNotes: [
+    "When the player UI asks for the current pool value, we read the grain's in-memory counter. Sub-millisecond.",
+    "For the ticking meter that grows as people play, the player connects via WebSocket. The grain publishes deltas (e.g. +£0.05) and a fan-out tier pushes them to everyone watching that pool.",
+  ],
+
+  topology: `┌── Region: Pool home ─────┐    ┌── Other regions ──┐
+│ Orleans cluster (writer) │    │ read-only replicas │
+│ SQL AG primary           │ ─▶ │ SQL AG secondary   │
+│ Kafka primary            │ ─▶ │ Kafka MirrorMaker  │
+└──────────────────────────┘    └────────────────────┘`,
+  topologyNotes: [
+    "Each pool lives in one home region — that's where its grain runs and where SQL is primary. Players in other regions still contribute, but the contribution travels to the pool's home for commit.",
+    "Routing is done by Azure Front Door (or equivalent) on a pool-id-aware rule. Read replicas in other regions support the meter display when latency matters, but writes always go home.",
+    "Pools are tagged with the jurisdictions they're allowed to span. The gateway looks up that tag and rejects contributions from outside the list before they reach the engine — so a misconfigured operator can't accidentally feed a ring-fenced pool.",
+  ],
+
+  deepDive: {
+    title: "Two-phase contribute / claim, sync on critical path",
+    body: `<p>The constraint that drives this design is: <strong>a played spin must always have a recorded contribution.</strong> If we let a spin run before the contribution is safely written, then a crash mid-spin would leave the pool short of money it owes. That's a regulatory problem.</p>
+
+    <p>So we split a wager into two phases:</p>
+    <ol>
+      <li><strong>PrePlay (contribute):</strong> on the critical path, synchronously, before the spin is allowed to run. SQL Server commits the contribution row with a sync replica, so it's durable in two places. Only after that commits does the spin proceed.</li>
+      <li><strong>Claim (on win):</strong> when the game produces a win, a separate sync call awards the pool. The claim references the original wager ID; we verify the contribution exists, snapshot the current pool value, and award it.</li>
+    </ol>
+
+    <h4>Why we use an outbox, not a direct Kafka publish</h4>
+    <p>The naive design would write to SQL, then publish to Kafka. But what if SQL succeeds and the Kafka publish fails? The contribution is recorded but no downstream service ever hears about it — pool meters and analytics drift. This is the classic <em>dual-write problem</em>.</p>
+    <p>The outbox pattern fixes it by writing the contribution row <strong>and</strong> a "to be published" outbox row in the same database transaction. They commit together or not at all. A separate poller reads the outbox and publishes to Kafka, marking each row done. If Kafka is down, the rows pile up and ship later — nothing is lost.</p>
+
+    <h4>Pattern transfer</h4>
+    <p>This is the same one-writer-per-entity pattern that runs through Wallet (one writer per account) and Leaderboard (one writer per tournament). An Orleans grain owns the pool's in-memory state; it serialises updates internally, so we never need a distributed lock. The grain periodically snapshots to SQL for durability. Concurrency stays a local problem.</p>`,
+  },
+
+  pushbacks: [
+    ["What if SQL commits but the spin then fails?", "The contribution is recorded, the spin never happens, no claim fires. The money stays in the pool for a future winner — that's actually fine, because the player wasn't charged for a spin that didn't run (the wallet debit is also tied to the same flow). If we needed strict reversal we'd add a compensating flow, but the default is 'leave it in the pool' because that money is still legitimately part of the prize."],
+    ["Why sync to SQL, why not just publish to Kafka and call it done?", "Imagine Kafka is down. Either (a) we block all spins until it's back — that's effectively making it sync anyway, just worse, or (b) we let spins run uncontributed and reconcile later. Option (b) is a regulatory problem because we'd have played spins with no recorded contribution. So we make the durability sync explicitly, and accept the latency."],
+    ["What if a single pool gets too hot for one Orleans grain?", "We can split the pool into segments — sub-grains that each handle a slice of the contributions. The meter is the sum of the segments. We'd only do this for pools that approach the limit; default is one grain per pool."],
+    ["What happens if a win-claim arrives before the contribution has committed?", "The claim references the wager ID. The engine refuses to award until it can confirm the contribution row exists. So out-of-order arrivals just get a brief rejection and a retry — we own the ordering rule, the operator doesn't."],
+    ["Multi-region pool — what's the latency cost?", "A spin in APAC contributing to a Europe-home pool pays a cross-region round-trip on the contribution. We mitigate by routing the player's session to the pool's home region from the start where the rules allow, so the round-trip happens at session-open, not on every spin."],
+  ],
+
+  walkIn: "Two-phase contribute/claim — synchronous SQL AG commit on the critical path with an outbox for fan-out, Orleans grain per pool for in-memory meter increments. Same single-writer-per-entity pattern as Wallet and Leaderboard.",
+
+  sources: [
+    ["How Progressive Jackpot Pooling Systems Calculate Payouts", "https://mediagroup.co.id/how-progressive-jackpot-pooling-systems-calculate-payout-amounts"],
+    ["Jackpot Aggregator API Solution: iGaming Integration Guide", "https://autotrophig.com/blogs/jackpot-aggregator-api-solution/"],
+  ],
+},
+
+// =============================================================================
+{
+  id: "wallet",
+  badge: "Foundational",
+  badgeClass: "heroes",
+  title: "Global Player Wallet",
+  oneLiner: "Multi-currency, multi-jurisdiction wallet with strict balance integrity.",
+  summary: "100M accounts · 50K tx/sec · linearizable per account · 7-year audit.",
+
+  prompt: "Design a global player wallet. Deposits, withdrawals, transfers, real-time balance reads, multiple currencies, multiple regulatory jurisdictions. No double-spends, ever.",
+
+  functional: [
+    "Read current balance",
+    "Debit (place wager / withdraw) — must check balance",
+    "Credit (deposit / win) — no balance check",
+    "Transfer between accounts",
+    "Statement / history queries",
+  ],
+
+  nfrs: [
+    ["Accounts", "100M total, 5M DAU", "Stated"],
+    ["Read latency", "&lt;50ms p99", "Inside spin budget"],
+    ["Debit/credit latency", "&lt;200ms p99", "Inside spin budget"],
+    ["Throughput", "50K tx/sec peak", "Gameplay-driven"],
+    ["Consistency", "Linearizable per account", "No double-spend"],
+    ["Audit retention", "7 years", "Regulator"],
+  ],
+
+  outOfScope: ["Game logic", "Payment-provider internals", "KYC flow"],
+
+  capCall: "Each account is strictly <strong>CP</strong>. There is no scenario where we accept a stale read or eventual consistency on a balance — a double-spend caused by either is a regulatory incident. Cross-account moves (transfers) become two single-account transactions with idempotency keys. We pay for this with sync replication, which adds commit latency, but losing committed money is much worse than slow commits.",
+
+  entities: `Account     { id, playerId, currency, jurisdiction, status }
+Balance     { accountId, current, snapshotVersion }
+LedgerEntry { id, accountId, type(debit|credit), amount, txKey, ts }   -- append-only
+Tx          { txKey, accountId, amount, idempotencyKey }`,
+
+  apis: [
+    { method: "GET",  path: "/account/{id}/balance" },
+    { method: "POST", path: "/account/{id}/debit",  note: "idempotent on txKey; rejects on insufficient funds" },
+    { method: "POST", path: "/account/{id}/credit", note: "idempotent on txKey" },
+    { method: "POST", path: "/account/{id}/transfer/{toId}", note: "two-leg, idempotent on txKey" },
+    { method: "GET",  path: "/account/{id}/statement?from=&to=" },
+  ],
+
+  writePath: `[Caller] ──debit(accountId, txKey)──▶ [API]
+                                                       │
+                                                       ▼
+                                            [Router: hash(accountId)]
+                                                       │
+                                                       ▼
+                                       ┌───────────────────────────────┐
+                                       │  Account Shard                 │
+                                       │  Orleans grain (1/account)     │
+                                       │  in-mem balance + dedupe(txKey)│
+                                       └───────────────┬───────────────┘
+                                                       │ append entry
+                                          ┌────────────┼────────────┐
+                                          ▼                         ▼
+                                    [SQL AG sync]           [Kafka: ledger-events]
+                                       (RPO=0)                       │
+                                                                     ▼
+                                                              [ClickHouse audit]`,
+  writeNotes: [
+    "The router hashes the account ID and sends the request to one shard. The critical path never crosses shards, so we don't have a distributed transaction problem to solve.",
+    "Inside the shard, an Orleans grain holds the account. Because the grain is the only writer for that account, two concurrent debits don't race — they queue. We've removed the classic wallet bug (two debits both reading the same starting balance) by construction, without a SELECT FOR UPDATE.",
+    "Every debit and credit appends a ledger entry. The current balance is the sum of entries (in practice a snapshot plus recent deltas). Append-only is easy to audit and easy to reverse.",
+    "We replicate SQL synchronously. That adds a few ms to every commit, but we get zero data loss on failover. Auditors and regulators care about that more than they care about p99.",
+  ],
+
+  readPath: `[Caller] ──GET balance──▶ [API] ──▶ [Account Shard] ──▶ grain in-mem balance`,
+  readNotes: [
+    "Read served from the grain's in-memory state at sub-ms.",
+    "On grain cold-start, hydrate from snapshot + replay ledger tail.",
+  ],
+
+  topology: `┌── Region A (account home) ──┐   ┌── Region B (DR) ──┐
+│ Orleans cluster (writers)   │ ▶ │ standby cluster    │
+│ SQL AG primary              │ ▶ │ SQL AG secondary   │
+└─────────────────────────────┘   └────────────────────┘`,
+  topologyNotes: [
+    "Each account has a home region. Cross-region access is a network hop, not a write.",
+    "DR region holds sync replica; manual or auto-fail-over depending on SLA.",
+  ],
+
+  deepDive: {
+    title: "Single-writer per account beats distributed locking",
+    body: `<p>The classic wallet bug is simple. Two debits arrive at the same time. Both read the balance, both check there's enough, both subtract their amount, both commit. Result: the player has been charged twice from a balance that could only afford one. The accountant cries.</p>
+
+    <p>You can fix this with database tricks: <code>SELECT FOR UPDATE</code> serialises by taking a row lock (slow under contention), or optimistic concurrency reads a version number and retries on conflict (better but the caller has to handle retries). Both work, both add complexity, both can still go wrong if you forget them on one code path.</p>
+
+    <p>The cleaner answer is to ensure that <strong>only one piece of code is ever touching one account at a time</strong>. That's what an Orleans grain gives you: there's exactly one grain instance per account, anywhere in the cluster, and it processes its mailbox one message at a time. Two simultaneous debits become two messages in the queue. They're processed sequentially. There's no race because there's no concurrency on this account.</p>
+
+    <h4>Idempotency</h4>
+    <p>Every transaction carries a <code>txKey</code> — a UUID the caller generates per intent. The grain remembers <code>(txKey → result)</code> for a retry window (24 hours). If a network blip causes the caller to retry, the grain sees the same key and returns the same answer it gave last time, without re-applying the transaction. So the player gets charged once even if the caller tries five times.</p>
+
+    <h4>Transfers between accounts</h4>
+    <p>A transfer touches two grains, so we can't keep it inside one. Instead we run it as a small saga: debit the source first, then on success credit the destination. If the credit fails, we issue a compensating credit back to the source. Both legs use the same <code>txKey</code> family, so they're individually idempotent, and a retry of the whole saga is safe.</p>
+
+    <h4>What about a VIP whale who hammers one account?</h4>
+    <p>The single grain is then the bottleneck. The escape hatch is to split the hot account into "hold" segments — sub-balances that handle independent traffic, periodically merged. We don't do this by default; it's only for accounts that approach the limit. Most accounts are fine on one grain.</p>`,
+  },
+
+  pushbacks: [
+    ["Why not eventual consistency? It would scale better.", "It would, but a double-spend caused by a stale read is a regulatory incident — and given enough volume those edge cases happen daily. The cost of strong per-account consistency (commit latency, slightly more infra) is bearable. The cost of getting this wrong (regulator action, refunds, brand damage) is not."],
+    ["What happens if the grain's host machine crashes during a transaction?", "Either the transaction has committed to SQL or it hasn't. Orleans rebalances grains automatically — a new host activates the grain, hydrates state from SQL, and serves callers. If a caller retries with the same txKey, the dedupe table tells them whether the original attempt actually committed."],
+    ["How do you reconcile against the payment provider?", "A daily settlement job aggregates our ledger deltas and compares against the payment provider's statement. Anything that doesn't match goes into a clearing queue for an operator to investigate. This is also where you'd catch a bug in your own code — the totals stop matching."],
+    ["What about multiple currencies?", "Each account has one home currency. We never mix currencies inside a ledger entry. Conversion happens at the API boundary, with the FX rate captured at that moment as part of the transaction record. Inside the ledger, every entry is in the account's currency."],
+    ["Why append-only? Why not just update a balance row?", "Three reasons. Auditors love append-only because nothing is overwritten, so there's no 'who changed this and when' question. Bugs are recoverable — if we discover we miscalculated, we re-aggregate from the entries with the corrected logic. And reversals become a normal forward operation (a credit), not a magical UPDATE."],
+  ],
+
+  walkIn: "Orleans grain per account gives single-writer linearizability without distributed locks; append-only ledger with sync SQL AG replica for RPO=0; idempotency via txKey dedupe.",
+
+  sources: [],
+},
+
+// =============================================================================
+{
+  id: "bet-history",
+  badge: "Compliance",
+  badgeClass: "heroes",
+  title: "Bet History + Regulator Audit",
+  oneLiner: "Every wager retained 7 years; regulators query within 24h; players see real-time history.",
+  summary: "120B records · tiered hot/warm/cold · WORM immutability · GDPR crypto-shred.",
+
+  prompt: "Design a bet-history service. Every wager is retained 7 years. Regulators must query (any criterion) with a 24-hour SLA. Players see their own history in real-time.",
+
+  functional: [
+    "Ingest every committed wager (and update on settlement)",
+    "Player query: my last 30 days, paginated",
+    "Regulator live query: arbitrary criteria over recent data",
+    "Regulator batch query: arbitrary criteria over historical data",
+    "GDPR-compliant player redaction",
+  ],
+
+  nfrs: [
+    ["Write rate", "~600/sec avg", "1.5B/month"],
+    ["Total volume", "~120B records", "7 years"],
+    ["Player read p99", "&lt;500ms last 30 days", "Self-service UX"],
+    ["Regulator SLA", "24 hours, any criterion", "Stated"],
+    ["Immutability", "Once written, never changed", "Audit"],
+  ],
+
+  outOfScope: ["Wagering itself", "Player auth"],
+
+  capCall: "Reads are <strong>AP</strong>: a few seconds of staleness on a player's history is fine, and a regulator querying historical data has a 24-hour SLA so seconds don't matter. The thing we cannot compromise is <strong>durability</strong> — the moment a bet exists, it must be in a place where we can never lose it. So writes go to Kafka first (replicated, durable), and only afterwards do they fan out to the various stores. Cold storage is on WORM (Write Once Read Many) blobs — even our own ops can't modify it.",
+
+  entities: `Bet           { id, playerId, gameId, wager, ts, jurisdiction }
+BetSettlement { betId, outcome, payout, settledAt }
+PlayerKey     { playerId, hashedId, encryptionKey }   -- redaction support`,
+
+  apis: [
+    { method: "GET", path: "/me/bets?from=&to=&page=", note: "player self-service, last 30d hot" },
+    { method: "GET", path: "/regulator/live?criteria=", note: "warm tier (last 13mo)" },
+    { method: "POST", path: "/regulator/batch", note: "queues a batch query, returns ticket" },
+    { method: "GET",  path: "/regulator/batch/{ticket}", note: "result location when ready" },
+    { method: "POST", path: "/me/redact", note: "GDPR — crypto-shreds player key" },
+  ],
+
+  writePath: `[Wager producer] ──publish──▶ [Kafka: bets]
+                                              │
+                                              ├──▶ [Hot store]   last 30d
+                                              ├──▶ [Warm store]  last 13mo (ClickHouse)
+                                              └──▶ [Cold archive] years 2–7
+                                                   (Parquet on WORM blob
+                                                    + manifest index)`,
+  writeNotes: [
+    "Kafka is our durable spine. Producers wait for acknowledgement from all replicas before they consider a bet recorded. With replication factor 3 and require-all-acks, you'd have to lose three machines simultaneously to lose a bet.",
+    "Each storage tier is its own consumer of Kafka. They all read at-least-once and write idempotently (keyed on betId), so a consumer crash just means it resumes from the last committed offset; nothing is lost or duplicated in the destination.",
+    "Cold tier files are WORM-locked at the storage level. Once written, they cannot be modified — not by us, not by an attacker with our admin credentials. This is what regulators want to see.",
+    "A manifest indexes the cold tier: for each file we record (year-month, file path, min/max key, row count). Queries can prune entire files based on the manifest before opening them, so a regulator query touches a handful of files even when the dataset is in the hundreds of thousands.",
+  ],
+
+  readPath: `Player path:
+[Player] ──HTTP──▶ [API] ──▶ [Hot store: partition by playerId]
+
+Regulator live:
+[Regulator UI] ──SQL──▶ [Warm: ClickHouse]
+
+Regulator batch:
+[Regulator UI] ──submit──▶ [Job queue] ──▶ [Spark/Athena]
+                                            │
+                                            ▼
+                                        [Cold blob via manifest]`,
+  readNotes: [
+    "Hot store partitioned by <code>playerId</code> for fast self-service.",
+    "Warm tier (ClickHouse) supports ad-hoc SQL — ideal for regulator live queries.",
+    "Cold queries are batch — manifest gives partition pruning so a query touches few files.",
+  ],
+
+  deepDive: {
+    title: "Tiered storage + WORM + crypto-shred",
+    body: `<p>The thing that makes this design work is realising that <strong>different consumers want different things from the same data</strong>. The player wants their last 30 days, fast, on their phone. The regulator wants ad-hoc analytical queries over the last year. A historic investigation wants a batch query over seven years. If we tried to serve all three from one store, we'd either pay way too much (hot storage for 7 years) or be too slow for the player (everything on cold).</p>
+
+    <h4>Three tiers</h4>
+    <ul>
+      <li><strong>Hot</strong> (Cosmos or Cassandra): the last 30 days, partitioned by player ID. Optimised for "give me my recent bets" — single-digit-hundred-millisecond p99.</li>
+      <li><strong>Warm</strong> (ClickHouse): the last 13 months, in a columnar format. Optimised for analytical queries — a regulator can run "all bets over £10K in jurisdiction X last quarter" and get an answer in seconds.</li>
+      <li><strong>Cold</strong> (Parquet on WORM blob): years 2 through 7, immutable, indexed by a manifest. Queries are batch jobs that run in minutes — comfortably inside the 24-hour SLA.</li>
+    </ul>
+    <p>Cold storage is roughly 100× cheaper per GB than hot. With 120 billion records, that's the difference between "tractable" and "the FD says no".</p>
+
+    <h4>Two query plans, same data</h4>
+    <p>The player path needs partitioning by player ID — every player gets a fast lookup on their own data. The regulator path is usually by date range or jurisdiction. Same data, two index shapes. We don't write the data twice; we configure each sink to organise it differently.</p>
+
+    <h4>GDPR meets immutability — crypto-shredding</h4>
+    <p>Here's the awkward bit. The regulator demands immutability — we cannot delete a bet record. GDPR demands the right to be forgotten — we must remove a player's data on request. These look incompatible.</p>
+    <p>The trick is that <strong>records are immutable, but identifiers don't have to be</strong>. We never store a player's PII directly in the bet record. Instead, the bet has a player ID that is itself encrypted with a per-player key, and PII (name, address, etc.) is encrypted with that same key in a separate table. To "forget" a player, we destroy their key. The bet records remain for the regulator (they need them), but the link back to the human is gone — nobody can decrypt their identity, including us. This is called crypto-shredding.</p>`,
+  },
+
+  pushbacks: [
+    ["What happens if a write to one of the sinks fails?", "Kafka is the durable record. Each sink reads from Kafka and only commits its read position after the data is safely in the destination. So a sink crash just means it resumes where it left off; the original event in Kafka is still there."],
+    ["Can a regulator query seven-year-old data in seconds?", "No — the 24-hour SLA exists exactly so we can answer cold-tier queries via batch processing. If a regulator needs sub-second on year-old data, that's a different (and much more expensive) requirement and we'd push back on it."],
+    ["How do you handle schema changes over 7 years?", "Append-only with schema-on-read. New fields are added, not renamed. The cold reader has to know how to read multiple historic schemas — annoying but tractable. Breaking changes are managed by versioning the file format and including a schema descriptor in the manifest."],
+    ["How do you avoid double-counting on a consumer crash?", "Each sink uses idempotent writes keyed on the bet ID. Cosmos and ClickHouse both support upsert by primary key. So if the consumer applies the same event twice, the destination state is the same — no duplicate row."],
+    ["Cold storage is WORM, but what if we discover a bug in a recorded bet?", "We can't change the original — that's the whole point of WORM. Instead we issue a correction record (a separate, dated entry) and we aggregate corrections at query time. The original stays. This is how accountants have always done corrections too."],
+  ],
+
+  walkIn: "Kafka spine, three storage tiers (hot/warm/cold) by access pattern, WORM blob for cold immutability, crypto-shred for GDPR. Player and regulator queries route to the right tier; manifest gives partition pruning on cold.",
+
+  sources: [],
+},
+
+// =============================================================================
+{
+  id: "rng-audit",
+  badge: "RGS-flavoured",
+  badgeClass: "web",
+  title: "RNG Audit & Spin Verification",
+  oneLiner: "Every spin captured immutably; regulator verifies any single spin on demand.",
+  summary: "10K spins/sec · Merkle-anchored chain · 5-min any-spin verification.",
+
+  prompt: "Design an RNG audit system. The RGS produces millions of spin outcomes. Regulators must pick any past spin and verify the outcome was generated by a certified RNG and not tampered with after the fact.",
+
+  functional: [
+    "Capture every spin's seed/outcome record at write time",
+    "Sign / chain so post-write tampering is detectable",
+    "Index for fast lookup by spinId, playerId, gameId, time",
+    "Regulator verification API: return record + cryptographic proof",
+  ],
+
+  nfrs: [
+    ["Spin volume", "10K/sec peak", "Per studio"],
+    ["Verification SLA", "&lt;5 min, any spin", "Stated"],
+    ["Tamper-evidence", "Detect any post-write modification", "Including by ops"],
+    ["Retention", "7 years", "Regulator"],
+    ["Cert alignment", "GLI / BMM", "Standard"],
+  ],
+
+  outOfScope: ["Game payout math", "Player display"],
+
+  capCall: "We choose <strong>durability and tamper-evidence over latency</strong>. Records are signed at write time and grouped into Merkle batches every hour. The hourly Merkle root is then anchored to a public timestamp service. The hot-path cost is just an HMAC; the deep tamper-evidence (which can detect even an insider with our keys) lags by about an hour, but that's far inside any audit window.",
+
+  entities: `SpinRecord  { spinId, gameId, playerId, ts,
+              seed, seedHash, outcome,
+              certificateId, hmac }
+MerkleBlock { hour, root, leafCount, blobOffset }
+Anchor      { hour, root, externalProof }   -- public timestamp / chain anchor`,
+
+  apis: [
+    { method: "POST", path: "/audit/spin", note: "internal — write a SpinRecord (idempotent on spinId)" },
+    { method: "GET",  path: "/audit/spin/{id}", note: "regulator: returns record + Merkle proof + anchor" },
+    { method: "GET",  path: "/audit/search?playerId=&from=&to=", note: "regulator: filtered listing" },
+  ],
+
+  writePath: `[Game RGS] ──SpinRecord──▶ [Signer: HMAC w/ KMS key]
+                                              │
+                                              ▼
+                                       [WORM blob: append-only]
+                                              │
+                                              ▼
+                                       [Hourly Merkle tree builder]
+                                              │
+                                              ▼
+                                       [Public anchor: timestamp service]`,
+  writeNotes: [
+    "Every spin record gets an HMAC — a fast cryptographic fingerprint generated using a key held in our KMS. This is cheap (microseconds) so it doesn't slow the hot path.",
+    "Every hour, we group all the records from that hour into a Merkle tree. The root of the tree is a single hash that summarises all the records — change any one record, the root changes.",
+    "We then publish the hourly Merkle root to a public timestamp service or a public blockchain. This is the bit that defends against an insider attack: even if someone with our KMS key tries to rewrite history, the public anchor recorded the original root at the time. A mismatch is detectable.",
+  ],
+
+  readPath: `[Regulator] ──spinId──▶ [Index] ──▶ [Blob offset]
+                                          │
+                                          ▼
+                                    [Record + Merkle proof + anchor proof]`,
+    readNotes: [
+    "The regulator looks up a spin by ID. Our index returns the blob location.",
+    "We return the spin record plus a Merkle proof — a small list of sibling hashes that lets the regulator recompute the hourly root from the record. They then compare that root against what the public anchor recorded, which proves the record hasn't changed since it was written.",
+    "The index is rebuildable from the blob, so we don't need to replicate it as heavily as the records themselves.",
+  ],
+
+  deepDive: {
+    title: "Hash-chained Merkle + public anchor (not blockchain)",
+    body: `<p>To design this well we need to be honest about who we're defending against. The obvious threat is an outside attacker — but the more interesting one is <strong>an insider with our keys</strong>. A simple "we sign every record" approach falls apart if the signer's key gets compromised, because the attacker can rewrite history and re-sign it. We can't tell the difference.</p>
+
+    <p>The fix is to have someone outside our control witness our state regularly. That's what the public anchor does.</p>
+
+    <h4>How it works in practice</h4>
+    <ul>
+      <li><strong>At write:</strong> we HMAC each record. This is fast and protects against bit-flips and outside tampering.</li>
+      <li><strong>Every hour:</strong> we compute a Merkle tree over all records written that hour. The root is a single hash that summarises everything — change any one record and the root changes.</li>
+      <li><strong>After computing each root:</strong> we publish it to an external timestamp service (RFC 3161) or a public blockchain. The external party records "this root existed at time T". Their record is outside our control.</li>
+    </ul>
+
+    <h4>What this catches</h4>
+    <ul>
+      <li><strong>Outside tampering</strong>: the HMAC won't verify. Caught instantly.</li>
+      <li><strong>Insider rewrite</strong>: even if someone with our keys re-signs everything, the public anchor still has the original root from time T. When a regulator pulls the record and the proof, the recomputed root won't match the anchor. Caught.</li>
+    </ul>
+
+    <h4>Why not just put everything on a blockchain</h4>
+    <p>A Merkle tree with public anchoring gives us the same tamper-evidence guarantees as a blockchain, at a tiny fraction of the cost. We're not trying to run a decentralised currency; we're trying to prove "this record existed at this time and hasn't changed". One hash per hour anchored externally does that perfectly. Blockchains add throughput limits, transaction fees, and operational headaches for no extra security in this threat model.</p>
+
+    <h4>Verification cost</h4>
+    <p>To verify a single spin: recompute its leaf hash, walk up about 20 sibling hashes (for an hour with a million records), compare the root to the anchor. That's around 20 hash operations and one external lookup — well under a second. The 5-minute SLA is comfortable.</p>`,
+  },
+
+  pushbacks: [
+    ["Could an attacker just delete records to hide bad ones?", "The Merkle root for the hour encodes the leaf count. If a record disappears, the proof for any other record from that hour can no longer be reconstructed against the anchored root. So a regulator audit catches it immediately."],
+    ["What if our KMS key is compromised?", "The past is safe — anchored roots are already public and immutable. We rotate keys for new records. Old records stay verifiable using their original anchor; new records get signed with the new key. The compromise can't retroactively change history."],
+    ["Why not sign every record with a hardware security module?", "Too slow. HSMs do hundreds to low thousands of signatures per second; we need ten thousand. So we use cheap HMACs at write time and a single HSM-class signature on the hourly root. Same security guarantee for the audit, fraction of the cost."],
+    ["What's the storage cost like?", "WORM blob storage is cheap — pennies per GB-month. The index is small relative to the records and is rebuildable from the blob if we lose it, so it doesn't need heavy replication."],
+    ["Can a regulator re-derive an outcome from the seed?", "Yes if we store the seed (or a seed hash) and the exact RNG version. The regulator can run the certified RNG with the same seed and confirm they get the same outcome. This is a transparency feature some jurisdictions like."],
+  ],
+
+  walkIn: "HMAC each record at write, batch into hourly Merkle trees, anchor each root externally. Cheap on the hot path; tamper-evident even against insiders; verification is O(log N) plus one external lookup.",
+
+  sources: [
+    ["Inside the Tech Stack of Online Casino Apps — RNG, Encryption, and Real-Time Architecture", "https://www.technology.org/2026/03/23/inside-the-tech-stack-of-online-casino-apps-rng-encryption-and-real-time-architecture/"],
+    ["What is a Remote Gaming Server (RGS)? — Reelsoft", "https://www.reelsoft.com/news/what-is-a-remote-gaming-server"],
+    ["How a Remote Gaming Server Works — Capermint", "https://www.capermint.com/how-a-remote-gaming-server-works/"],
+  ],
+},
+
+// =============================================================================
+{
+  id: "responsible-gambling",
+  badge: "Stream processing",
+  badgeClass: "heroes",
+  title: "Responsible Gambling Monitor",
+  oneLiner: "Ingest wager streams, flag at-risk behaviour in near-real-time.",
+  summary: "Flink keyed-state · sliding windows · &lt;5min time-to-alert · rule + ML hybrid.",
+
+  prompt: "Design a responsible-gambling monitoring service. It ingests the wager stream, builds per-player behaviour features, runs risk models, and alerts operators (or the player) when an at-risk pattern emerges. Time-to-alert: minutes.",
+
+  functional: [
+    "Continuously ingest committed wagers",
+    "Maintain per-player rolling features (1h, 24h, 7d, 30d)",
+    "Score features against rules + ML model",
+    "Emit alerts (operator notify, in-product nudge, cooling-off)",
+    "Allow rule replay against history",
+  ],
+
+  nfrs: [
+    ["Ingest", "~600/sec avg", "1.5B/month"],
+    ["Time to alert", "&lt;5 min from triggering pattern", "Stated"],
+    ["Feature windows", "1h / 24h / 7d / 30d", "Standard RG horizons"],
+    ["Precision", "Tunable / auditable false-positive rate", "Compliance"],
+    ["Privacy", "PII per jurisdiction", "GDPR etc."],
+  ],
+
+  outOfScope: ["Risk model training", "Operator workflow post-alert"],
+
+  capCall: "Alerting is <strong>AP</strong>: a few seconds late is acceptable, but <em>missing</em> an alert isn't. The pipeline has to be lossless. Flink's watermark + allowed-lateness model handles events that arrive a bit out of order. Anything that arrives outrageously late goes to a side output where a human reviews it, rather than silently being dropped.",
+
+  entities: `Wager       { id, playerId, amount, ts, ... }
+PlayerFeatures { playerId, w1h{ count,sum,...}, w24h{...}, w7d{...}, w30d{...} }
+RiskScore   { playerId, score, ruleHits[], modelV, ts }
+Alert       { id, playerId, severity, reason, jurisdiction, ts }`,
+
+  apis: [
+    { method: "POST", path: "/internal/wager", note: "stream ingest (Kafka in practice)" },
+    { method: "GET",  path: "/player/{id}/features", note: "operator dashboard" },
+    { method: "GET",  path: "/alerts?since=", note: "operator feed" },
+    { method: "POST", path: "/replay", note: "re-run rule R over offset range to side topic" },
+  ],
+
+  writePath: `[Wager source] ──▶ [Kafka: wagers, partition by playerId]
+                                          │
+                                          ▼
+                              [Flink: keyed by playerId]
+                                  ▪ sliding windows (1h/24h/7d/30d)
+                                  ▪ feature outputs
+                                          │
+                                          ▼
+                              [Online feature store: Redis]
+                                          │
+                                          ▼
+                              [Scorer: rules + ML model]
+                                          │
+                                          ▼
+                              [Action engine] ──▶ alerts / nudges`,
+  writeNotes: [
+    "We partition Kafka by player ID. All events for the same player land on the same partition, so Flink can route them all to the same subtask, where it keeps that player's running state.",
+    "Flink stores per-player aggregates as keyed state, backed by RocksDB. We can hold tens of GB of state per Flink instance comfortably — far more than fits in memory but still fast because RocksDB is local.",
+    "Computed features land in Redis for fast lookup by the scorer, and in Parquet on blob for offline model training. Same data, two access shapes — same trick we use in bet history.",
+    "The scorer is deliberately policy-neutral: it produces a score and lists the rules that fired. The action engine downstream decides what to <em>do</em> about it, because that depends on jurisdiction, time of day, and the player's nudge history. Mixing the two would mean a policy change requires redeploying the detector.",
+  ],
+
+  readPath: `[Operator UI] ──▶ [API] ──▶ [Alerts store]   ▪ recent alert feed
+                              ──▶ [Redis]         ▪ live player features`,
+  readNotes: [
+    "Ops dashboards read alerts from a durable store and live features from Redis.",
+    "Player-facing nudges are fired from the action engine, not the dashboard.",
+  ],
+
+  deepDive: {
+    title: "Sliding windows + rule replay",
+    body: `<p>Two design choices do most of the work here:</p>
+
+    <h4>Why sliding windows, not tumbling</h4>
+    <p>A tumbling window is "every hour, on the hour, summarise the last hour's bets". The problem is a player who crosses a risk threshold at 10:55 wouldn't trigger an alert until the 11:00 boundary — 5 minutes too late. A sliding window says "as of right now, what does the last hour look like?". Every event re-evaluates the window. So a player crossing a threshold triggers an alert <em>immediately</em>. Flink's keyed state model makes sliding windows efficient (we update incrementally instead of scanning the whole window every time).</p>
+
+    <h4>Replaying a new rule against history</h4>
+    <p>This is a question compliance asks all the time: "if we'd had this new rule last quarter, who would it have flagged?" We can't disturb production and we can't wait six weeks for the new rule to gather data.</p>
+    <p>The fix is that <strong>the wager stream is already durable in Kafka, indefinitely</strong>. We spin up a fresh Flink job, point it at a Kafka offset from three months ago, run with the new rule, and write the results to a separate output topic. Production is untouched. We compare the new alerts against what we would have done. If the rule looks good, we promote it to the production job (a rolling deployment).</p>
+    <p>This is the unsung superpower of putting events in Kafka: any new analysis is just another consumer. We didn't have to design "replay" as a feature; it falls out of the architecture.</p>
+
+    <h4>Why detection and action are separated</h4>
+    <p>The detector says "this player scored 0.83 on rule X". The action engine says "given they're in jurisdiction A, it's 11pm, and we already nudged them this week, do nothing". Policy moves more often than detection. If we mixed them, every policy tweak would force a redeploy of the stateful detector — which means resetting Flink state, which is a real operation. Keeping them separate keeps the cost of policy changes low.</p>`,
+  },
+
+  pushbacks: [
+    ["How big does the state in Flink get?", "Per-player keyed state, backed by RocksDB on local SSD. Tens of GB per Flink instance is routine and fine. The bound is player count multiplied by window depth, which is well-known and predictable."],
+    ["What about events that arrive late?", "Flink uses watermarks to track event-time progress, and we configure an allowed-lateness (say, 30 minutes). Anything later than that goes to a side output where a human reviews — better than silently dropping it."],
+    ["What if the same player triggers many alerts in an hour?", "We suppress per-player after the first alert in a configurable window (say an hour), and the operator side has its own rate-limit. So a player on a tear gets one alert, not twenty."],
+    ["How is PII handled given GDPR?", "We pseudonymise at ingest using a per-jurisdiction key. The pipeline only ever sees pseudonyms. The join to actual PII happens in the operator dashboard, inside the secure jurisdictional region, behind separate auth. The pipeline can run anywhere; the PII can't leave."],
+    ["Why Flink and not Spark Structured Streaming?", "Spark micro-batches every few seconds, which adds latency we don't want. Flink processes event-by-event with proper watermark semantics, which fits 'sliding window per player' naturally. Spark is great for batch; Flink is built for this shape."],
+  ],
+
+  walkIn: "Kafka partitioned by playerId, Flink keyed-state with sliding windows, scoring is rule + ML, action engine carries the policy. Replay is just another Flink job from a saved offset writing to a side topic.",
+
+  sources: [],
+},
+
+// =============================================================================
+{
+  id: "remote-gaming-server",
+  badge: "From the web",
+  badgeClass: "web",
+  title: "Remote Gaming Server (RGS)",
+  oneLiner: "The backend that hosts game logic, RNG, and wallet integrations for casino games.",
+  summary: "Multi-tenant gateway · isolated game engine · certified RNG · sub-200ms spin.",
+
+  prompt: "Design a Remote Gaming Server. Operators integrate via a single API; the RGS hosts game logic, calls a certified RNG, integrates with the player wallet, records every spin for audit, supports bonus mechanics.",
+
+  functional: [
+    "Authenticate operator + player session",
+    "Run a spin: debit wallet, call RNG, compute outcome, credit on win",
+    "Record every spin to immutable audit",
+    "Apply bonus mechanics (free-spin, multiplier)",
+    "Enforce jurisdiction config (RTP, max bet, available games)",
+  ],
+
+  nfrs: [
+    ["Spin latency", "&lt;200ms p99", "Player-perceived"],
+    ["Throughput", "10K spins/sec/studio", "Peak"],
+    ["Multi-tenancy", "Many games + many operators", "Stated"],
+    ["Game onboarding", "Days, not months", "Stated"],
+    ["Cert", "GLI / BMM", "Standard"],
+  ],
+
+  outOfScope: ["Player auth (delegated to operator)", "Payments"],
+
+  capCall: "The wager-debit and win-credit pair must be <strong>CP</strong> — both either happen or neither does, because money. The RNG service is on the critical path (we can't run a spin without it) but it's isolated from the rest of the platform so it can be certified separately. The audit write is durable <em>before</em> the spin result returns to the player, so a crash mid-flight can never produce a played-but-unaudited spin.",
+
+  entities: `Operator      { id, name, jurisdictions[] }
+Game          { id, family, version, rtp, manifest }
+PlaySession   { id, operatorId, playerId, gameId }
+Spin          { id, sessionId, wager, outcome, ts }
+BonusGrant    { id, playerId, type, value, expiresAt }`,
+
+  apis: [
+    { method: "POST", path: "/play/spin", note: "wager debit + RNG + outcome + credit. Idempotent on spinId." },
+    { method: "POST", path: "/play/freespin", note: "consumes a BonusGrant" },
+    { method: "GET",  path: "/play/session/{id}", note: "current session state" },
+    { method: "POST", path: "/admin/game/onboard", note: "manifest-driven game registration" },
+  ],
+
+  writePath: `[Operator] ──spin──▶ [Gateway: jurisdiction + tenant]
+                                          │
+                                          ▼
+                                  [Game Engine (per game)]
+                                          │
+                          ┌───────────────┼───────────────┐
+                          ▼               ▼               ▼
+                   [RNG service]   [Wallet: debit]  [Audit: spin store]
+                                          │
+                                          ▼
+                                   [Outcome]
+                                          │
+                                          ▼
+                                   [Wallet: credit (if win)]
+                                          │
+                                          ▼
+                                   return to operator`,
+  writeNotes: [
+    "The gateway is the per-operator door. It checks the player's jurisdiction (which sets allowed RTP, max bet, banned games) and applies a per-operator rate limit. This stops a misbehaving operator monopolising shared resources.",
+    "The game engine is stateless and deterministic — given a seed and the engine version, it always produces the same outcome. One engine per game (or family of similar games). The engine doesn't know about operators; it just runs the game.",
+    "The RNG is a separate, network-isolated service. It's certified independently of the games, seeded from hardware entropy, and re-seeded periodically. We concentrate certification effort on this one service rather than every game.",
+    "The spin is written to immutable audit storage before the engine returns to the operator. If we crash between audit-write and operator-response, the spin still exists in audit — the player will see the result on retry.",
+  ],
+
+  readPath: `[Operator] ──session──▶ [API] ──▶ [Session store]
+[Auditor]  ──spin──▶ [Audit API] ──▶ [RNG audit subsystem]`,
+  readNotes: [
+    "Session reads served from in-memory grain or Redis.",
+    "Audit reads delegate to the RNG audit subsystem (separate design).",
+  ],
+
+  deepDive: {
+    title: "Multi-tenancy at the gateway, isolation at the engine",
+    body: `<p>The hard problem: we want one shared platform serving many operators and many games, but a noisy operator must not be able to slow down anyone else's spins. And the game logic itself must not have to know which operator is calling — that's a separation-of-concerns trap.</p>
+
+    <h4>Layered isolation</h4>
+    <ol>
+      <li><strong>Gateway:</strong> per-operator queues with rate-limits and bulkheads. If operator A is slamming us, their queue fills up and they're throttled, but operator B's traffic flows through their own queue unaffected.</li>
+      <li><strong>Game engine:</strong> stateless workers sitting behind the gateway. They don't know who the operator is — they just run the game. This means we can scale them simply by adding more.</li>
+      <li><strong>RNG service:</strong> shared but network-isolated. Only the game engine can call it, on a private network. Hardware entropy seeds it; we re-seed periodically. By concentrating randomness in one service, we can certify it once instead of certifying every game's randomness separately.</li>
+      <li><strong>Wallet:</strong> sometimes the operator owns it (their wallet, their players), sometimes we provide a shared wallet. The engine talks to a wallet adapter that hides the difference.</li>
+    </ol>
+
+    <h4>Determinism by seed + version</h4>
+    <p>To reproduce a historical spin (for an audit, or a player query), we need to be able to re-run the exact same game logic with the exact same input. We store the seed and the engine version in the audit record. Every deployed engine binary has a version. Re-running a 2-year-old spin means deploying the 2-year-old binary with the recorded seed and confirming we get the recorded outcome.</p>
+
+    <h4>Game onboarding in days, not months</h4>
+    <p>The traditional way to add a new game is to write code, hand it to a certification team, wait. Slow. Instead, we structure the engine so a new game is mostly a manifest: RTP table, paylines, asset URLs, special-feature configurations. An automated certification harness runs the standard tests against any new manifest. Humans only get involved if the harness flags something.</p>
+
+    <h4>Why bonus is a separate engine</h4>
+    <p>Bonuses are a marketing tool: free spins, multipliers, special tournaments. They change weekly. If they're baked into game code, every promotion is a deploy. So instead, the game engine emits events ("a player just spun, won X") and a separate bonus engine listens, applies whatever bonus rules are active, and pushes credits or grants back to the player. Bonus changes don't touch game code.</p>`,
+  },
+
+  pushbacks: [
+    ["What if the wallet is down when a player tries to spin?", "We have two clean options: reject the spin straight away (preferred — the player sees a clear error and we don't have inflight state to clean up), or, for credit-on-win, write to an outbox so the credit lands once wallet is back. The thing we never do is silently swallow the failure."],
+    ["How do you handle game upgrades without invalidating certification?", "Semantic versioning. A cosmetic change (new artwork) is a minor version — no re-cert. A behavioural change (new RTP table, new feature) is a major version, and we re-cert. The audit record stores the major version, so historical spins are reproducible against the binary they actually ran on."],
+    ["Can the RNG service scale?", "Yes — it's stateless. We shard horizontally. Each shard has its own hardware entropy source and is certified independently, so adding capacity is well-trodden ground."],
+    ["What about live-dealer games?", "Different beast. The randomness comes from a physical wheel or deck in a studio, with a real-time camera feed. Our RGS becomes a bridge: it feeds the studio's outcome stream into the same audit and wallet plumbing as algorithmic games. The game engine is mostly a pass-through; the studio is the engine."],
+    ["Why not just put the wallet inside the RGS?", "The wallet has different scaling characteristics (write-heavy, ledger-shaped), different SLOs, different regulator surface, and operators often own their own wallet. Forcing it into the RGS would couple all of that. The adapter pattern keeps the engine portable across operators with different wallet setups."],
+  ],
+
+  walkIn: "Gateway per-operator with bulkheads, stateless game engine per game, shared but isolated RNG service, wallet via adapter. Determinism via seed + version; onboarding via manifest + automated cert.",
+
+  sources: [
+    ["Best Practices in Casino Game Backend Architecture — SDLC Corp", "https://sdlccorp.com/post/best-practices-in-casino-game-backend-architecture/"],
+    ["Building the Backend of Luck — ALX Africa", "https://www.alxafrica.com/building-the-backend-of-luck-how-online-casino-platforms-handle-real-time-gameplay/"],
+    ["What is a Remote Gaming Server (RGS)? — Reelsoft", "https://www.reelsoft.com/news/what-is-a-remote-gaming-server"],
+  ],
+},
+
+// =============================================================================
+{
+  id: "sportsbook",
+  badge: "From the web",
+  badgeClass: "web",
+  title: "Sportsbook In-Play Odds Engine",
+  oneLiner: "Live odds, fast bet acceptance, exposure-managed at peak event scale.",
+  summary: "100K markets · 10K odds-tick/sec · &lt;300ms bet accept · risk-driven auto-suspend.",
+
+  prompt: "Design the in-play (live) sportsbook engine. Odds for thousands of markets update many times per second; players place bets that must be accepted or rejected within hundreds of milliseconds; book owner must manage exposure and adjust lines.",
+
+  functional: [
+    "Publish odds ticks per market",
+    "Push updated odds to subscribed players in near-real-time",
+    "Accept or reject a bet within a tolerance window",
+    "Settle bets after the event",
+    "Auto-suspend or move lines based on exposure",
+  ],
+
+  nfrs: [
+    ["Active markets", "100K peak", "Multi-sport in-play"],
+    ["Odds ticks", "10K/sec total", "Across all markets"],
+    ["Bet accept p99", "&lt;300ms", "UX critical"],
+    ["Bet throughput", "20K/sec peak", "Super-Bowl class"],
+    ["Suspend latency", "&lt;100ms", "Risk-critical"],
+    ["Settlement", "All bets settled in &lt;5min post-event", "Standard"],
+  ],
+
+  outOfScope: ["Trading model", "Player auth", "Payments"],
+
+  capCall: "Bet acceptance is <strong>CP</strong>: once we say yes to a bet it's binding, so the bet record must be durable before we tell the player. The odds display is <strong>AP</strong>: the player seeing a price that's tens of milliseconds stale is fine; markets move that fast anyway. The suspend signal — when the book pulls a market — takes precedence over normal odds traffic, because allowing bets onto a suspended market is a much worse failure than rejecting a few late-arriving good ones.",
+
+  entities: `Market   { id, sport, eventId, type, status, oddsVersion, currentOdds }
+Bet      { id, playerId, marketId, oddsVersion, stake, ts }
+Exposure { marketId, totalLiability, byOutcome{} }
+Suspend  { marketId, reason, ts }`,
+
+  apis: [
+    { method: "POST", path: "/bet", note: "stake + marketId + oddsVersion. Idempotent on betId." },
+    { method: "GET",  path: "/market/{id}/odds" },
+    { method: "WS",   path: "/market/{id}/subscribe", note: "odds ticks + suspend events" },
+    { method: "POST", path: "/bet/{id}/cashout", note: "live cashout against current odds" },
+  ],
+
+  writePath: `Odds path:
+[Trading model] ──tick──▶ [Kafka: odds, partition per sport] ──▶ [Market state (in-mem)]
+                                                                    │
+                                                                    ▼
+                                                          [WS gateway: fan-out]
+
+Bet path:
+[Player] ──bet(marketId, oddsVer)──▶ [API] ──▶ [Market state]
+                                                    │ check oddsVer + suspend
+                                                    ▼
+                                            [Bet store + Wallet debit]
+                                                    │
+                                                    ▼
+                                            [Risk engine: update exposure]
+                                                    │ if exposure > threshold
+                                                    ▼
+                                            publish [Suspend / line-move]`,
+  writeNotes: [
+    "Odds updates flow through a Kafka topic per sport. Producers are the trading models; consumers are the in-memory market state and the WebSocket fan-out tier.",
+    "The market state is held in-memory (Redis or Hazelcast) so a bet can read 'current odds for market X' in well under a millisecond. The latency budget for bet acceptance is tight — there's no time for a database read.",
+    "When a bet arrives, it references the odds version the player was looking at. If that version is still current (or within tolerance), we accept at the player's price. If not, we reject and the client is told the new price so they can decide again.",
+    "The risk engine reads accepted bets asynchronously and updates exposure. When exposure breaches a threshold, it emits a suspend signal — which is just another message on the odds bus, but flagged as priority so the gateway honours it within a hundred milliseconds.",
+  ],
+
+  readPath: `[Player] ──HTTP──▶ [API] ──▶ [Market state]
+[Player] ──WebSocket──▶ [WS Gateway] ──◀── odds + suspend stream`,
+  readNotes: [
+    "Odds reads served from in-memory grid; sub-ms.",
+    "WebSocket gateways subscribed to the odds + suspend topics; per-region.",
+  ],
+
+  deepDive: {
+    title: "Latched-odds bet acceptance under fast-moving lines",
+    body: `<p>This is the design problem that defines a sportsbook. The player sees a price, taps "Place bet", and by the time the request reaches us, the price has moved. If we reject every bet that doesn't match the live price, we lose customers — players will tap and miss most of the time. If we accept anything, we get fleeced by sharp bettors picking off stale prices.</p>
+
+    <h4>Latched-odds with tolerance</h4>
+    <p>The compromise:</p>
+    <ol>
+      <li>The bet request carries the <code>oddsVersion</code> the player was looking at.</li>
+      <li>The server checks the live version. If it's the same version, or within a configured tolerance (a small number of versions, or a small price delta), <strong>we accept at the price the player saw</strong>.</li>
+      <li>If the price has moved beyond tolerance, we reject and return the new price. The client can re-confirm or walk away.</li>
+    </ol>
+    <p>The tolerance is a knob the book operator turns. Lenient tolerance = better UX, more operator risk. Tight tolerance = lower risk, more rejections. The right answer depends on the sport, the market, and the operator's appetite — that's why it's configurable.</p>
+
+    <h4>Suspend has its own fast path</h4>
+    <p>When the book wants to pull a market — say a goal has been scored and odds need to redo — they send a suspend signal. We can't afford this to wait in line behind normal odds ticks. So suspend signals get a priority lane on the bus and the gateway honours them within ~100ms. Any bet that arrives on a suspended market in that window is rejected straight away.</p>
+
+    <h4>Risk-driven auto-suspend</h4>
+    <p>Sometimes the book operator doesn't know to suspend until exposure tells them. The risk engine reads the accepted-bet stream, sums up potential payout per outcome, and when exposure on any single outcome breaches a configured threshold, it auto-emits a suspend signal. The bet acceptance path doesn't wait for risk — that'd blow the latency budget — so the loop is async, but the suspend itself is fast.</p>
+
+    <h4>Pattern transfer</h4>
+    <p>The shape is identical to the Leaderboard: durable log (Kafka) for state changes, in-memory grid (Redis/Hazelcast) for fast reads on the hot path, separate consumers (here: the risk engine; in Leaderboard: the WebSocket fan-out) reading off the log. Same pattern, different domain.</p>`,
+  },
+
+  pushbacks: [
+    ["Why not just write the bet straight to SQL synchronously?", "The latency budget is 300ms p99 and we've already spent some of it on auth, validation, and the wallet debit. A SQL write at 20K bets/sec needs careful schema and connection management to stay under that. The usual answer is in-memory accept + async durable write via the outbox pattern: we persist locally and to Kafka in one shot, then a worker durably writes to SQL. The outbox guarantees the row lands."],
+    ["What if regional in-memory states disagree on the current odds?", "The odds bus replicates across regions, but per-region state is eventually consistent on each tick. During a partition, regions can briefly disagree. Our policy is: if the player's region thinks the odds moved, we reject. Better to send the player back to re-confirm than to accept based on a stale view."],
+    ["Can settlement actually settle 10M bets in 5 minutes?", "Yes — settlement is embarrassingly parallel. Partition by event ID, settle each partition independently with idempotent updates keyed on bet ID, and run as many workers as we need. 10M bets in 5 minutes is roughly 33K/sec, which is well within reach."],
+    ["What about cash-out — selling a bet back mid-event?", "Same shape as a fresh bet. We quote the current price in real-time from live odds, the player accepts or rejects, and we apply the same latched-odds + tolerance policy. The book's quote is the offer; the player's tap is the acceptance."],
+    ["What happens if a region dies during a peak match?", "The odds bus is multi-region. Players' WebSockets reconnect to a surviving region — they'll see a brief blip but resume seeing odds. Bet acceptance fails over together with the wallet (since the wallet's home region drives where bets accept). For an event whose home region is the dead one, we degrade to a warm secondary, which is the same pattern as Leaderboard."],
+  ],
+
+  walkIn: "Odds bus on Kafka, market state in-memory for fast bet acceptance, latched-odds with tolerance, suspend on its own fast path, risk engine off the critical path. Bet writes go to outbox + async durable. Same shape as Leaderboard.",
+
+  sources: [
+    ["Sportsbook Platform Architecture 2026 — Betforge", "https://betforge.io/blog/sportsbook-platform-architecture-cto-guide"],
+    ["Building a Secure Backend for Sports Betting & iGaming — Symphony Solutions", "https://symphony-solutions.com/insights/building-secure-backend-for-sports-betting"],
+    ["Development of an Online Sports Betting Platform — Intellias", "https://intellias.com/development-of-an-online-sports-betting-platform/"],
+    ["NextGen iGaming Platform — Sportradar", "https://sportradar.com/betting-gaming/platforms/nextgen-igaming-platform/"],
+  ],
+},
+];
+
+// =============================================================================
+const list = document.getElementById("list");
+const detail = document.getElementById("detail");
+const titleEl = document.getElementById("title");
+const backBtn = document.getElementById("backBtn");
+
+function renderList() {
+  list.innerHTML = designs.map(d => `
+    <div class="list-card" data-id="${d.id}">
+      <span class="badge ${d.badgeClass || ''}">${d.badge}</span>
+      <h2>${d.title}</h2>
+      <div class="summary">${d.summary}</div>
+    </div>
+  `).join("");
+  list.querySelectorAll(".list-card").forEach(el => {
+    el.addEventListener("click", () => showDetail(el.dataset.id));
+  });
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function renderApis(apis) {
+  return apis.map(a => {
+    const verbClass = a.method === "WS" ? "ws" : "verb";
+    return `<div><span class="${verbClass}">${a.method.padEnd(5)}</span> ${a.path}${a.note ? ` <span class="note">— ${a.note}</span>` : ""}</div>`;
+  }).join("");
+}
+
+function showDetail(id) {
+  const d = designs.find(x => x.id === id);
+  if (!d) return;
+  document.body.classList.add("detail");
+  titleEl.textContent = d.title;
+  window.scrollTo(0, 0);
+
+  let html = `
+    <h2>${d.title}</h2>
+    <div class="one-liner">${d.oneLiner}</div>
+
+    <section>
+      <h3>1 · Prompt</h3>
+      <p>${d.prompt}</p>
+    </section>
+
+    <section>
+      <h3>2 · Functional requirements</h3>
+      <ul>${d.functional.map(x => `<li>${x}</li>`).join("")}</ul>
+    </section>
+
+    <section>
+      <h3>3 · Non-functional requirements</h3>
+      <table>
+        <thead><tr><th>Quality</th><th>Target</th><th>Rationale</th></tr></thead>
+        <tbody>${d.nfrs.map(([k,v,r]) => `<tr><td>${k}</td><td>${v}</td><td>${r}</td></tr>`).join("")}</tbody>
+      </table>
+    </section>
+
+    <section>
+      <h3>4 · Out of scope</h3>
+      <ul>${d.outOfScope.map(x => `<li>${x}</li>`).join("")}</ul>
+    </section>
+
+    <section>
+      <h3>5 · CAP / consistency call</h3>
+      <div class="callout">${d.capCall}</div>
+    </section>
+
+    <section>
+      <h3>6 · Core entities</h3>
+      <pre class="diagram">${escapeHtml(d.entities)}</pre>
+    </section>
+
+    <section>
+      <h3>7 · APIs</h3>
+      <div class="api-list">${renderApis(d.apis)}</div>
+    </section>
+
+    <section>
+      <h3>8 · HLD — Write path</h3>
+      <pre class="diagram">${escapeHtml(d.writePath)}</pre>
+      <ul>${d.writeNotes.map(x => `<li>${x}</li>`).join("")}</ul>
+    </section>
+
+    <section>
+      <h3>9 · HLD — Read path</h3>
+      <pre class="diagram">${escapeHtml(d.readPath)}</pre>
+      <ul>${d.readNotes.map(x => `<li>${x}</li>`).join("")}</ul>
+    </section>`;
+
+  if (d.topology) {
+    html += `
+    <section>
+      <h3>10 · Multi-region topology</h3>
+      <pre class="diagram">${escapeHtml(d.topology)}</pre>
+      <ul>${d.topologyNotes.map(x => `<li>${x}</li>`).join("")}</ul>
+    </section>`;
+  }
+
+  html += `
+    <section>
+      <h3>${d.topology ? "11" : "10"} · Deep dive — ${d.deepDive.title}</h3>
+      ${d.deepDive.body}
+    </section>
+
+    <section>
+      <h3>${d.topology ? "12" : "11"} · Likely panel pushbacks</h3>
+      <table>
+        <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+        <tbody>${d.pushbacks.map(([q,a]) => `<tr><td>${q}</td><td>${a}</td></tr>`).join("")}</tbody>
+      </table>
+    </section>
+
+    <section>
+      <h3>${d.topology ? "13" : "12"} · One-sentence walk-in</h3>
+      <div class="callout win">${d.walkIn}</div>
+    </section>`;
+
+  if (d.sources && d.sources.length) {
+    html += `
+    <section class="sources">
+      <h3>Sources</h3>
+      <ul>${d.sources.map(([t,u]) => `<li><a href="${u}" target="_blank" rel="noopener">${t}</a></li>`).join("")}</ul>
+    </section>`;
+  }
+
+  detail.innerHTML = html;
+}
+
+function showList() {
+  document.body.classList.remove("detail");
+  titleEl.textContent = "iGaming Design Examples";
+  window.scrollTo(0, 0);
+}
+
+backBtn.addEventListener("click", showList);
+
+renderList();
+</script>
+</body>
+</html>

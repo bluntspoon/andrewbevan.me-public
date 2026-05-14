@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Tech Cram Flashcards</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0f1419;
+    color: #e6edf3;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  header {
+    padding: 12px 16px;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  header h1 {
+    font-size: 16px;
+    font-weight: 600;
+    flex: 1;
+    min-width: 0;
+  }
+  .deck-select {
+    background: #21262d;
+    color: #e6edf3;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+  .progress {
+    font-size: 13px;
+    color: #8b949e;
+  }
+  .progress-bar {
+    height: 3px;
+    background: #21262d;
+    width: 100%;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #2f81f7;
+    transition: width 0.2s;
+  }
+  main {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card {
+    width: 100%;
+    max-width: 600px;
+    height: 100%;
+    perspective: 1500px;
+    cursor: pointer;
+  }
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+  }
+  .card.flipped .card-inner {
+    transform: rotateY(180deg);
+  }
+  .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 14px;
+    padding: 24px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    -webkit-overflow-scrolling: touch;
+  }
+  .card-front {
+    background: #1c2128;
+    border: 1px solid #30363d;
+  }
+  .card-back {
+    background: #1a2432;
+    border: 1px solid #2f81f7;
+    transform: rotateY(180deg);
+  }
+  .card-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #2f81f7;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .card-back .card-label { color: #f0883e; }
+  .card-id {
+    font-size: 12px;
+    color: #6e7681;
+    margin-bottom: 8px;
+  }
+  .card-q {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.35;
+    margin-bottom: 12px;
+  }
+  .card-hint {
+    margin-top: auto;
+    text-align: center;
+    color: #6e7681;
+    font-size: 13px;
+    padding-top: 16px;
+  }
+  .card-a {
+    font-size: 15px;
+    line-height: 1.55;
+    flex: 1;
+  }
+  .card-a ul {
+    margin: 8px 0 12px 18px;
+  }
+  .card-a li {
+    margin-bottom: 6px;
+  }
+  .card-a strong { color: #f0f6fc; }
+  .card-a code {
+    background: #0d1117;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 13px;
+    color: #ffa657;
+  }
+  .trap {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: #2d1b1b;
+    border-left: 3px solid #f85149;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .trap strong { color: #ff7b72; }
+  nav {
+    background: #161b22;
+    border-top: 1px solid #30363d;
+    padding: 12px 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  button {
+    background: #21262d;
+    color: #e6edf3;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    flex: 1;
+    min-height: 44px;
+  }
+  button:active { background: #30363d; }
+  button.primary {
+    background: #2f81f7;
+    border-color: #2f81f7;
+    color: white;
+    flex: 2;
+  }
+  button.primary:active { background: #1f6feb; }
+  button.icon { flex: 0 0 44px; padding: 12px; }
+  .empty {
+    text-align: center;
+    color: #8b949e;
+    padding: 40px 20px;
+  }
+  @media (max-width: 380px) {
+    .card-q { font-size: 19px; }
+    .card-a { font-size: 14px; }
+    header h1 { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Tech Cram</h1>
+  <select class="deck-select" id="deckSelect">
+    <option value="depth">Depth (25)</option>
+    <option value="breadth">Breadth (40)</option>
+    <option value="all">All (65)</option>
+  </select>
+  <div class="progress" id="progress">1 / 25</div>
+</header>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<main id="main">
+  <div class="card" id="card">
+    <div class="card-inner">
+      <div class="card-face card-front" id="front"></div>
+      <div class="card-face card-back" id="back"></div>
+    </div>
+  </div>
+</main>
+<nav>
+  <button class="icon" id="prevBtn" aria-label="Previous">‹</button>
+  <button class="primary" id="flipBtn">Flip</button>
+  <button class="icon" id="shuffleBtn" aria-label="Shuffle">⇄</button>
+  <button class="icon" id="nextBtn" aria-label="Next">›</button>
+</nav>
+
+<script>
+const DEPTH = [
+  { id: "A1", q: "Value vs reference types in .NET", a: `
+    <ul>
+      <li><strong>Value type</strong>: holds data directly. Copied on assignment / parameter pass. Structs, primitives, enums.</li>
+      <li><strong>Reference type</strong>: holds a pointer to a heap object. Assignment copies the pointer; both vars point at the same object. Classes, arrays, strings, delegates.</li>
+      <li><code>string</code> is reference but immutable — feels value-like.</li>
+      <li><strong>Boxing</strong>: assigning a value type to <code>object</code> or interface — heap allocation + copy.</li>
+    </ul>`,
+    trap: "Mutating a struct through an interface mutates the boxed copy, not the original. Looks like a no-op bug." },
+
+  { id: "A2", q: "Big-O / collection complexity in .NET", a: `
+    <ul>
+      <li><strong>List&lt;T&gt;</strong>: O(1) append, O(n) insert/remove mid, O(n) search.</li>
+      <li><strong>Dictionary / HashSet</strong>: O(1) avg, O(n) worst (collisions). Not thread-safe.</li>
+      <li><strong>SortedDictionary</strong>: O(log n), iterates in key order.</li>
+      <li><strong>ConcurrentDictionary</strong>: striped locks. Use <code>AddOrUpdate</code> / <code>GetOrAdd</code> for atomic compounds.</li>
+    </ul>`,
+    trap: "Dictionary enumeration order is undefined. Don't rely on insertion order." },
+
+  { id: "A3", q: "Bitwise operators — when do you use them?", a: `
+    <ul>
+      <li><code>&amp;</code> test, <code>|</code> set, <code>&amp;~</code> clear, <code>^</code> toggle.</li>
+      <li><code>&lt;&lt;</code> / <code>&gt;&gt;</code> = ×/÷ powers of 2.</li>
+      <li>Uses: <strong>[Flags] enums</strong>, packing small fields, hash-mixing.</li>
+    </ul>`,
+    trap: "Signed >> sign-extends — shifting a negative stays negative. Use unsigned or C# 11's >>>." },
+
+  { id: "A4", q: "Unicode & encoding — what breaks?", a: `
+    <ul>
+      <li><strong>UTF-8</strong>: 1–4 bytes, ASCII-compatible, default for files and wire.</li>
+      <li><strong>UTF-16</strong>: .NET / Java string internal; surrogate pairs for codepoints &gt; U+FFFF.</li>
+      <li><code>string.Length</code> returns code units, not characters.</li>
+      <li>Normalise (NFC) before compare or hash.</li>
+    </ul>`,
+    trap: "Truncating a UTF-16 string at an arbitrary index can split a surrogate pair → invalid string." },
+
+  { id: "A5", q: "JSON vs Protobuf vs Avro", a: `
+    <ul>
+      <li><strong>JSON</strong>: human, schemaless, large, slow. Public APIs.</li>
+      <li><strong>Protobuf</strong>: binary, schema-driven, compact, fast. Don't reuse field numbers. gRPC default.</li>
+      <li><strong>Avro</strong>: schema registry, Kafka common, strong evolution.</li>
+    </ul>`,
+    trap: "Proto3 can't distinguish default value from absent. Use 'optional' or wrappers when nullability matters." },
+
+  { id: "A6", q: "TCP vs UDP — when would you pick UDP?", a: `
+    <ul>
+      <li><strong>TCP</strong>: reliable, ordered, congestion-controlled. HTTP, gRPC, SQL.</li>
+      <li><strong>UDP</strong>: fire-and-forget, low latency. DNS, NTP, VoIP, video.</li>
+      <li><strong>QUIC</strong>: UDP + reliability + multiplexing in user-space. HTTP/3 runs on it. No TCP head-of-line blocking.</li>
+    </ul>`,
+    trap: "'UDP is faster' is misleading. TCP wins bulk; UDP wins small + latency-sensitive." },
+
+  { id: "A7", q: "Mutex primitives — pick one for X", a: `
+    <ul>
+      <li><strong>Monitor (lock)</strong>: in-process, reentrant, cheap. Default.</li>
+      <li><strong>Mutex</strong>: kernel object, named, cross-process. Slow.</li>
+      <li><strong>SemaphoreSlim</strong>: counting, async-friendly (WaitAsync).</li>
+      <li><strong>ReaderWriterLockSlim</strong>: many readers / one writer.</li>
+      <li><strong>Spinlock</strong>: busy-wait, very short sections only.</li>
+      <li><strong>Interlocked</strong>: lock-free CAS for single variables.</li>
+    </ul>`,
+    trap: "Never lock(this), lock(typeof(X)), lock(\"string\"). Use private readonly object." },
+
+  { id: "A8", q: "CAP & eventual consistency — pick CP or AP for jackpot ledger", a: `
+    <ul>
+      <li>Under partition: choose Consistency or Availability.</li>
+      <li><strong>CP</strong> for ledger writes — refuse rather than diverge.</li>
+      <li><strong>AP</strong> for read paths (leaderboards, dashboards).</li>
+      <li>Eventual consistency must specify <strong>staleness window</strong> + <strong>conflict rule</strong>.</li>
+    </ul>`,
+    trap: "'Eventually consistent' with no number is hand-waving. Always quote the window." },
+
+  { id: "A9", q: "Compiled vs interpreted — what does .NET do?", a: `
+    <ul>
+      <li>C# → IL (Roslyn) → JIT compiles to machine code on first call (RyuJIT).</li>
+      <li><strong>Tiered JIT</strong> re-compiles hot methods more aggressively.</li>
+      <li><strong>AOT</strong>: build-time native; faster start, less peak.</li>
+      <li><strong>GC</strong>: generational (Gen 0/1/2 + LOH). Server GC for throughput.</li>
+    </ul>`,
+    trap: "'Compiled' is binary thinking — modern .NET is JIT with tiered + AOT options." },
+
+  { id: "A10", q: "REST vs gRPC vs GraphQL", a: `
+    <ul>
+      <li><strong>REST</strong>: ubiquity, browser-friendly, cacheable. Public APIs.</li>
+      <li><strong>gRPC</strong>: IDL, HTTP/2, streaming, fast. Internal service-to-service.</li>
+      <li><strong>GraphQL</strong>: client-shaped queries, hard caching, needs query budget.</li>
+      <li>Idempotent: GET / PUT / DELETE; POST needs an idempotency key.</li>
+    </ul>`,
+    trap: "Most 'REST' is RPC-over-HTTP. Don't argue Roy Fielding orthodoxy." },
+
+  { id: "A11", q: "Stateful vs stateless apps — what's the cost of state?", a: `
+    <ul>
+      <li><strong>Stateless</strong>: any instance handles any request → easy horizontal scale.</li>
+      <li><strong>Stateful</strong>: pinned by key (sticky / actor) → low latency, harder to scale and fail over.</li>
+      <li>Externalise state (Redis, SQL) → stateless again, at a network-hop cost.</li>
+    </ul>`,
+    trap: "Sticky sessions look stateless but hide a hot-shard problem." },
+
+  { id: "A12", q: "AG vs SAN (SQL Server HA)", a: `
+    <ul>
+      <li><strong>Always On AG</strong>: each replica owns its data, log-shipped. Sync (RPO=0, latency cost) or async. Readable secondaries. Cross-DC.</li>
+      <li><strong>SAN FCI</strong>: shared disk, active/passive nodes. SAN is SPOF.</li>
+      <li>Modern default = AG. FCI lingers on licensing.</li>
+    </ul>`,
+    trap: "AG sync mode adds commit latency = replica RTT. State this explicitly." },
+
+  { id: "A13", q: "JWT, certs, password hashing — when is JWT wrong?", a: `
+    <ul>
+      <li><strong>JWT (signed)</strong>: stateless auth. <strong>Can't revoke</strong> before expiry without a denylist (defeats stateless).</li>
+      <li><strong>JWE</strong>: encrypted claims.</li>
+      <li><strong>mTLS</strong> for service-to-service. Prefer short-lived certs.</li>
+      <li>Passwords: <strong>Argon2id</strong> / bcrypt — never plain SHA.</li>
+    </ul>`,
+    trap: "JWT in localStorage = XSS-stealable. Use httpOnly + SameSite cookies." },
+
+  { id: "A14", q: "Test pyramid + kinds", a: `
+    <ul>
+      <li><strong>Unit</strong> (broad base): ms, no I/O.</li>
+      <li><strong>Integration</strong>: real DB / broker / HTTP.</li>
+      <li><strong>Contract</strong> (Pact): consumer-driven, guards inter-service compatibility.</li>
+      <li><strong>E2E</strong>: full system, slow, few golden flows.</li>
+      <li>Property-based for invariants. Mutation testing to verify the suite.</li>
+    </ul>`,
+    trap: "Ice-cream-cone (lots of E2E, few units) is slow, flaky, expensive." },
+
+  { id: "A15", q: "How does async/await actually work?", a: `
+    <ul>
+      <li>Compiler rewrites the method into a <strong>state-machine struct</strong> (IAsyncStateMachine).</li>
+      <li>Each <code>await</code>: save locals, hook continuation onto the Task, return the thread.</li>
+      <li>Continuation runs on captured <strong>SynchronizationContext</strong> unless <code>ConfigureAwait(false)</code>.</li>
+      <li><code>async</code> does <strong>not</strong> spawn threads. CPU-bound work needs <code>Task.Run</code>.</li>
+      <li><code>ValueTask&lt;T&gt;</code> reduces allocations on already-completed paths.</li>
+    </ul>`,
+    trap: ".Result / .Wait() in a sync context (UI / classic ASP.NET) deadlocks. Use ConfigureAwait(false) in libs." },
+
+  { id: "A16", q: "Virtual memory — what does it buy?", a: `
+    <ul>
+      <li>Each process sees an isolated flat address space.</li>
+      <li>MMU + page tables map virtual → physical. <strong>TLB</strong> caches recent translations.</li>
+      <li><strong>Paging</strong>: cold pages swap to disk. Thrashing = death.</li>
+      <li>Memory-mapped files for DBs.</li>
+      <li>Copy-on-write at fork.</li>
+    </ul>`,
+    trap: "'OOM' usually means address-space / commit-charge limit, not literal RAM. Read the actual error." },
+
+  { id: "A17", q: "Mutex cost — kernel vs user mode", a: `
+    <ul>
+      <li><strong>Uncontended</strong>: a few cycles (atomic CAS).</li>
+      <li><strong>Contended</strong>: kernel mode → context switch → microseconds.</li>
+      <li>Prefer Interlocked &gt; Monitor &gt; Mutex.</li>
+    </ul>`,
+    trap: "Fine-grained locks can be slower than one coarse lock when contention is low. Measure." },
+
+  { id: "A18", q: "Architecture patterns — monolith vs microservices vs event-driven", a: `
+    <ul>
+      <li><strong>Monolith</strong>: one deployable, ACID-easy. Modular monolith preserves boundaries.</li>
+      <li><strong>Microservices</strong>: independent scale / deploy / language. Cost: distributed txn, network failures, ops.</li>
+      <li><strong>Event-driven</strong>: broker decouples producers/consumers. Hard end-to-end reasoning.</li>
+      <li><strong>N-tier</strong>: presentation / business / data — historic default.</li>
+    </ul>`,
+    trap: "Distributed monolith — services that must deploy together. Worst of both." },
+
+  { id: "A19", q: "Hexagonal / Clean architecture", a: `
+    <ul>
+      <li><strong>Ports &amp; Adapters</strong>: domain at centre, infra at edge behind interfaces.</li>
+      <li><strong>Dependency rule</strong>: dependencies point inward.</li>
+      <li>Domain knows nothing about SQL or HTTP.</li>
+      <li>Pays off for rich domains; ceremony for thin CRUD.</li>
+    </ul>` },
+
+  { id: "A20", q: "UML diagram types — pick one", a: `
+    <ul>
+      <li><strong>Use case</strong>: actor goals.</li>
+      <li><strong>Activity</strong>: workflow / process with parallelism.</li>
+      <li><strong>Sequence</strong>: time-ordered messages between components. <strong>Most-used</strong>.</li>
+      <li><strong>Class</strong>: static structure, multiplicities, relationships.</li>
+      <li><strong>Component / deployment</strong>: services / physical placement.</li>
+      <li><strong>State</strong>: lifecycle of one entity.</li>
+    </ul>`,
+    trap: "Don't draw a class hierarchy when the question is about a system. Match diagram to question." },
+
+  { id: "A21", q: "Scrum vs Kanban vs #noestimates", a: `
+    <ul>
+      <li><strong>Scrum</strong>: time-boxed sprints, ceremonies. Predictable cadence.</li>
+      <li><strong>Kanban</strong>: continuous flow + WIP limits. Ops-heavy / interrupt-driven work.</li>
+      <li><strong>#noestimates</strong>: slice work uniformly small, count throughput. A lens, not a religion.</li>
+    </ul>` },
+
+  { id: "A22", q: "DevOps — what's in your pipeline?", a: `
+    <ul>
+      <li><strong>CI</strong>: lint → build → unit → integration → SAST/SCA → container → registry.</li>
+      <li><strong>CD</strong>: dev → smoke → canary → prod, auto rollback on SLI burn.</li>
+      <li><strong>Everything-as-code</strong>: Terraform / Bicep / Helm / pipeline YAML, PR-reviewed like app code.</li>
+    </ul>`,
+    trap: "Click-ops on infra has the same blast radius as code, but skips review." },
+
+  { id: "A23", q: "False cache-line invalidation — what is it and how do you fix?", a: `
+    <ul>
+      <li>CPU caches in <strong>64-byte lines</strong>.</li>
+      <li>Two threads writing different vars on the <strong>same line</strong> bounce the line between cores (MESI) → throughput collapses.</li>
+      <li><strong>Fix</strong>: pad hot vars to separate lines.</li>
+      <li>.NET: <code>[StructLayout(Explicit)]</code> + <code>[FieldOffset(64)]</code>. Java: <code>@Contended</code>.</li>
+      <li>Memory model: L1 ~1ns • L2 ~3ns • L3 ~10ns • RAM ~100ns • SSD ~100µs • net ~ms.</li>
+    </ul>`,
+    trap: "Padding without profiling wastes cache bandwidth. Measure with perf counters first." },
+
+  { id: "A24", q: "Containers — what's actually shared with the host?", a: `
+    <ul>
+      <li>Containers share the host <strong>kernel</strong>; package app + deps + config.</li>
+      <li>Linux primitives: <strong>namespaces</strong> (isolation), <strong>cgroups</strong> (limits), <strong>union FS</strong> (layers).</li>
+      <li>WSL2 = real Linux kernel in lightweight VM.</li>
+      <li>Pin images by <strong>digest</strong>, not tag.</li>
+    </ul>`,
+    trap: "'Lightweight VM' is wrong threat model — kernel exploit escapes the container." },
+
+  { id: "A25", q: "Kubernetes — Pod / Deployment / Service / Ingress", a: `
+    <ul>
+      <li><strong>Pod</strong>: smallest unit, shared net/storage.</li>
+      <li><strong>Deployment</strong>: rolling updates over a ReplicaSet.</li>
+      <li><strong>Service</strong>: stable virtual IP for selector-matched pods.</li>
+      <li><strong>Ingress</strong>: L7 routing, TLS termination.</li>
+      <li>Probes: liveness (restart), readiness (drop from LB), startup (slow boot).</li>
+    </ul>`,
+    trap: "Liveness probe that calls a downstream = cascading restarts when dep is sick." },
+];
+
+const BREADTH = [
+  { id: "B1", q: "CAP / PACELC", a: "Under partition: pick C or A. Else (no partition): trade Latency vs Consistency. Anchor in domain NFRs." },
+  { id: "B2", q: "Consistency models — strong / eventual / causal", a: "Strong = always latest (balances). Eventual = converges (catalogues). Causal = preserves cause-effect. Plus read-your-writes / monotonic / session compromises." },
+  { id: "B3", q: "Consensus (Raft)", a: "One leader per term. Leader replicates log. Entry committed once a majority quorum has it. Safety = quorum + persistent term/log + leader election with jitter." },
+  { id: "B4", q: "Idempotency — design an idempotent credit API", a: "Client UUID per intent. Server stores (key, result) in dedupe table with TTL. Repeat returns original result without re-executing." },
+  { id: "B5", q: "Exactly-once vs at-least-once", a: "Network exactly-once is impossible. Achievable as exactly-once processing via at-least-once delivery + idempotent consumer / transactional outbox." },
+  { id: "B6", q: "Clocks & time", a: "Wall-clock unsafe across nodes (skew). Use logical (Lamport, vector) or hybrid logical clocks (HLC). TrueTime is rare." },
+  { id: "B7", q: "Leader election & split-brain", a: "Quorum-based election (overlapping majorities). Fencing tokens reject stale-leader writes. Lease-based leadership with renewal." },
+  { id: "B8", q: "Partitioning & sharding", a: "Sharding key spreads load. Mitigate hot shards: sub-sharding, read replicas, write offload. Consistent hashing reduces reshard cost. Keep common path single-shard." },
+  { id: "B9", q: "Kafka vs Service Bus", a: "Kafka = log-structured, replay-friendly, partition-ordered. Service Bus = queue/topic, per-message ack, sessions for ordering. Kafka pushes cost to storage; SB to per-op." },
+  { id: "B10", q: "Ordering guarantees", a: "Kafka: partition by key → ordered within. Service Bus: sessions keyed → FIFO consumer. Process synchronously per key downstream." },
+  { id: "B11", q: "Back-pressure", a: "Bounded queues (push back). Scale consumers. Shed low-priority load. Autoscale on queue-depth. Never unbounded buffers." },
+  { id: "B12", q: "DLQ & poison messages", a: "After N failures → DLQ with full context. Alerts on non-zero depth. Replay tooling. Classify: transient (retry), poison (DLQ), data-quality (quarantine)." },
+  { id: "B13", q: "OLTP vs OLAP", a: "OLTP = row-oriented, normalised, point writes / short reads. OLAP = columnar, denormalised, wide scans + aggregates. Move via CDC → ClickHouse / Synapse." },
+  { id: "B14", q: "SQL indexing", a: "Indexes speed reads, slow writes, cost storage. Add when plan shows scan/lookup. Covering indexes eliminate lookups. Composite: leftmost-prefix. Drop unused." },
+  { id: "B15", q: "Transaction isolation levels", a: "Read Committed (no dirty) → Repeatable Read (no non-repeatable) → Snapshot/MVCC (consistent snapshot, no blocking) → Serializable (full)." },
+  { id: "B16", q: "Sharding vs replication", a: "Replication = same data many copies (read scale + HA). Sharding = different data on different nodes (write scale). Usually combined: shard then replicate." },
+  { id: "B17", q: "ClickHouse — why for jackpot analytics?", a: "Columnar + vectorised. MergeTree family. Materialised views maintain aggregates on insert → second-fresh dashboards. Not OLTP. Batch inserts, never per-row." },
+  { id: "B18", q: "Query tuning a regression", a: "Capture actual plan, compare to last-known-good. Check parameter sniffing, stale stats, data skew. Fix: update stats, add index, OPTION RECOMPILE, Query Store force plan." },
+  { id: "B19", q: "Circuit breakers", a: "Closed → Open (fail fast) → Half-open (probe). Driven by failure rate or latency. Polly composes breaker + retry + timeout. Half-open probe policy matters." },
+  { id: "B20", q: "Timeouts & retries", a: "Timeouts shorter than upstream's. Exponential back-off + jitter. Cap retries. Distinguish idempotent (safe) from non-idempotent." },
+  { id: "B21", q: "Bulkheads", a: "Isolate resources per tenant/class so one noisy tenant can't starve others. Separate thread/connection pools or pod boundaries. e.g. VIP wager pool." },
+  { id: "B22", q: "Chaos testing", a: "Inject failures with blast-radius control. Steady-state hypothesis tied to SLO. Stage → game days → automated chaos in prod. Without SLOs it's theatre." },
+  { id: "B23", q: "OWASP Top 10 — defenses", a: "Injection: parameterised queries + least-privilege. Broken auth: OIDC + MFA + rate limit. SSRF: outbound allowlist, block metadata endpoints, careful URL parsing." },
+  { id: "B24", q: "OIDC / OAuth2 PKCE", a: "Client sends code_challenge (SHA256 of code_verifier). IdP returns code. Client exchanges code + verifier for tokens. Defeats code interception on public clients." },
+  { id: "B25", q: "Crypto basics", a: "AES-GCM = symmetric, bulk. RSA/ECDSA = asymmetric, slow, key-exchange + signatures. SHA-256 = hash, integrity. Argon2id/bcrypt for passwords. Never home-brew." },
+  { id: "B26", q: "TLS 1.3", a: "1-RTT handshake (0-RTT for resumption — replay risk). Removed legacy ciphers. All post-ServerHello messages encrypted. PFS mandatory." },
+  { id: "B27", q: "Secrets management", a: "Never in source. Key Vault / HashiCorp Vault, RBAC-scoped, per-env. Prefer short-lived managed-identity tokens. Rotate automatically. Avoid env-vars (crash dumps leak)." },
+  { id: "B28", q: "TCP handshake & lifecycle", a: "SYN / SYN-ACK / ACK establishes seq numbers + windows. Congestion control (Reno/CUBIC/BBR). FIN/ACK + TIME_WAIT 2×MSL — can exhaust ephemeral ports under high churn." },
+  { id: "B29", q: "HTTP/1.1 vs 2 vs 3", a: "1.1: connection-level head-of-line. 2: multiplexed streams over one TCP, binary, HPACK. 3: QUIC over UDP, no TCP HOL, faster handshake." },
+  { id: "B30", q: "L4 vs L7 load balancing", a: "L4 routes IP:port, fast, dumb. L7 routes by host/path/header, can do auth/retries/canary. Pattern: L4 front + L7 inside platform. L4 hot-spots gRPC connections." },
+  { id: "B31", q: "DNS TTL trade-offs", a: "Low TTL = faster failover, more traffic. High TTL = cheaper, slower to react. Resolver caches and runtime caches (older Java/.NET) bound real reactivity." },
+  { id: "B32", q: "Logs / metrics / traces", a: "Logs: high-cardinality narrative, expensive. Metrics: low-cardinality, dashboards/alerts. Traces: per-request causal chain across services. OpenTelemetry standard." },
+  { id: "B33", q: "RED & USE methods", a: "RED (services): Rate, Errors, Duration. USE (resources): Utilisation, Saturation, Errors. Per-endpoint RED beats service-wide averages." },
+  { id: "B34", q: "SLO / SLI / SLA + error budget", a: "SLI = measure. SLO = internal target. SLA = contractual (with consequences). Error budget = 1 − SLO. Burn fast → slow deploys; fat → ship." },
+  { id: "B35", q: "Managed vs self-hosted", a: "Managed buys ops at premium. Self-host buys control + cost-at-scale at ops cost. Decide on criticality, expertise, compliance. 'Managed' ≠ zero-ops (you still own schema, quotas, cost)." },
+  { id: "B36", q: "AKS / Kubernetes basics", a: "Pod evicted under memory pressure: check requests vs limits, QoS class (BestEffort → Burstable → Guaranteed), node events, VPA/HPA history. CPU throttling is silent." },
+  { id: "B37", q: "Terraform patterns", a: "State must be remote (Azure Storage) with lock + versioning. Module boundaries = blast radius. Drift detection: scheduled plan in CI. Don't store secrets in state." },
+  { id: "B38", q: "Trunk-based development", a: "Short-lived branches, frequent merges → smaller diffs, easier review. Feature flags decouple deploy from release. Requires strong CI + flag hygiene." },
+  { id: "B39", q: "Blue-green / canary / feature flags", a: "Blue-green = swap whole env, instant rollback, double infra. Canary = traffic slice, monitor, progress. Flags = runtime per-user, granular but ops cost. Stale flags rot." },
+  { id: "B40", q: "async vs threads (.NET)", a: "async for I/O-bound (frees thread). Dedicated thread for long-running CPU work. Avoid Task.Run in ASP.NET request paths for I/O. ConfigureAwait(false) in libraries." },
+];
+
+const decks = { depth: DEPTH, breadth: BREADTH, all: [...DEPTH, ...BREADTH] };
+
+let deckName = "depth";
+let deck = decks[deckName];
+let idx = 0;
+
+const card = document.getElementById("card");
+const front = document.getElementById("front");
+const back = document.getElementById("back");
+const progress = document.getElementById("progress");
+const progressFill = document.getElementById("progressFill");
+const deckSelect = document.getElementById("deckSelect");
+
+function render() {
+  card.classList.remove("flipped");
+  const c = deck[idx];
+  front.innerHTML = `
+    <div class="card-label">Question</div>
+    <div class="card-id">${c.id}</div>
+    <div class="card-q">${c.q}</div>
+    <div class="card-hint">Tap to flip</div>
+  `;
+  const trapHtml = c.trap ? `<div class="trap"><strong>Trap:</strong> ${c.trap}</div>` : "";
+  back.innerHTML = `
+    <div class="card-label">Answer</div>
+    <div class="card-id">${c.id}</div>
+    <div class="card-a">${c.a}${trapHtml}</div>
+    <div class="card-hint">Tap to flip back</div>
+  `;
+  progress.textContent = `${idx + 1} / ${deck.length}`;
+  progressFill.style.width = `${((idx + 1) / deck.length) * 100}%`;
+}
+
+function next() { idx = (idx + 1) % deck.length; render(); }
+function prev() { idx = (idx - 1 + deck.length) % deck.length; render(); }
+function flip() { card.classList.toggle("flipped"); }
+function shuffle() {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  idx = 0;
+  render();
+}
+
+card.addEventListener("click", flip);
+document.getElementById("flipBtn").addEventListener("click", e => { e.stopPropagation(); flip(); });
+document.getElementById("nextBtn").addEventListener("click", e => { e.stopPropagation(); next(); });
+document.getElementById("prevBtn").addEventListener("click", e => { e.stopPropagation(); prev(); });
+document.getElementById("shuffleBtn").addEventListener("click", e => { e.stopPropagation(); shuffle(); });
+deckSelect.addEventListener("change", () => {
+  deckName = deckSelect.value;
+  deck = [...decks[deckName]];
+  idx = 0;
+  render();
+});
+
+let touchStartX = 0;
+let touchStartY = 0;
+main.addEventListener("touchstart", e => {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+main.addEventListener("touchend", e => {
+  const dx = e.changedTouches[0].screenX - touchStartX;
+  const dy = e.changedTouches[0].screenY - touchStartY;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+    if (dx < 0) next(); else prev();
+  }
+}, { passive: true });
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") next();
+  else if (e.key === "ArrowLeft") prev();
+  else if (e.key === " " || e.key === "Enter") { e.preventDefault(); flip(); }
+});
+
+deck = [...decks[deckName]];
+render();
+</script>
+</body>
+</html>

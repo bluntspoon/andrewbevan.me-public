@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Architecture Glossary</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0f1419;
+    color: #e6edf3;
+    line-height: 1.55;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    padding-top: max(10px, env(safe-area-inset-top));
+  }
+  .header-row {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header-row h1 { font-size: 17px; font-weight: 600; flex: 1; }
+  #count { font-size: 13px; color: #8b949e; }
+  .search-row {
+    padding: 0 16px 10px;
+  }
+  #search {
+    width: 100%;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #e6edf3;
+    font-size: 15px;
+  }
+  #search:focus { outline: none; border-color: #2f81f7; }
+  .filter-row {
+    padding: 0 16px 10px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter {
+    background: #21262d;
+    color: #8b949e;
+    border: 1px solid #30363d;
+    border-radius: 16px;
+    padding: 5px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .filter.active {
+    background: #2f81f7;
+    color: white;
+    border-color: #2f81f7;
+  }
+
+  main { max-width: 760px; margin: 0 auto; padding: 16px; }
+  .letter-bar {
+    position: sticky;
+    top: 64px;
+    z-index: 5;
+    background: #0f1419;
+    padding: 8px 0;
+    margin-bottom: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    border-bottom: 1px solid #30363d;
+  }
+  .letter-bar a {
+    flex: 1;
+    min-width: 22px;
+    text-align: center;
+    color: #8b949e;
+    text-decoration: none;
+    font-size: 12px;
+    padding: 4px;
+    font-weight: 600;
+  }
+  .letter-bar a:active { color: #2f81f7; }
+
+  .letter-section { margin-bottom: 18px; }
+  .letter-section h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2f81f7;
+    margin: 8px 0;
+    padding-top: 8px;
+  }
+  .term {
+    background: #1c2128;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .term-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .term-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #f0f6fc;
+  }
+  .term-aka {
+    font-size: 13px;
+    color: #8b949e;
+    font-style: italic;
+  }
+  .term-cat {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: rgba(47, 129, 247, 0.15);
+    color: #2f81f7;
+    padding: 2px 7px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  .term-cat.igaming { color: #f0883e; background: rgba(240, 136, 62, 0.15); }
+  .term-cat.dotnet  { color: #a371f7; background: rgba(163, 113, 247, 0.15); }
+  .term-cat.data    { color: #56d364; background: rgba(86, 211, 100, 0.15); }
+  .term-cat.security { color: #ff7b72; background: rgba(255, 123, 114, 0.15); }
+  .term-cat.net     { color: #79c0ff; background: rgba(121, 192, 255, 0.15); }
+  .term-cat.ops     { color: #d2a8ff; background: rgba(210, 168, 255, 0.15); }
+  .term-cat.process { color: #ffd866; background: rgba(255, 216, 102, 0.15); }
+  .term-def {
+    font-size: 14.5px;
+    color: #c9d1d9;
+    line-height: 1.55;
+  }
+  .term-def code {
+    background: #0d1117;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 12.5px;
+    color: #ffa657;
+  }
+  .term-def strong { color: #f0f6fc; }
+  .empty { color: #8b949e; padding: 24px; text-align: center; }
+  .footer { text-align: center; color: #6e7681; padding: 24px 16px; font-size: 12px; }
+  mark { background: #2f81f7; color: white; padding: 0 2px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-row">
+    <h1>Architecture Glossary</h1>
+    <span id="count"></span>
+  </div>
+  <div class="search-row">
+    <input id="search" type="search" placeholder="Search terms or definitions…" autocomplete="off">
+  </div>
+  <div class="filter-row" id="filters"></div>
+</header>
+<main>
+  <div class="letter-bar" id="letterBar"></div>
+  <div id="content"></div>
+  <div class="footer">~150 terms · architecture interview prep</div>
+</main>
+
+<script>
+const cats = {
+  general: "General",
+  distributed: "Distributed",
+  data: "Data",
+  net: "Networking",
+  security: "Security",
+  dotnet: ".NET / Runtime",
+  igaming: "iGaming",
+  arch: "Architecture",
+  ops: "DevOps",
+  observability: "Observability",
+  process: "Process",
+};
+
+const terms = [
+  // ---- A ----
+  { t: "ACID", cat: "data", def: "Atomicity, Consistency, Isolation, Durability — the four guarantees of a classical database transaction. ACID is what makes a relational DB safe to bet money on; eventual-consistency stores trade some of these for scale." },
+  { t: "AES-GCM", cat: "security", def: "A symmetric encryption mode that combines AES (the cipher) with Galois/Counter Mode (which adds authentication). The default modern choice for bulk data encryption — fast, parallelisable, and tamper-evident." },
+  { t: "AG", aka: "Always On Availability Group", cat: "data", def: "SQL Server's primary HA mechanism. The primary log-ships transactions to one or more secondaries; secondaries can be readable. Sync mode gives RPO=0 at commit-latency cost; async is faster but loses recent transactions on failover." },
+  { t: "AKS", aka: "Azure Kubernetes Service", cat: "ops", def: "Azure's managed Kubernetes offering. Same Kubernetes APIs everywhere, with control-plane and node-pool management handled by Azure." },
+  { t: "AML", aka: "Anti-Money Laundering", cat: "igaming", def: "Regulations requiring operators to detect and report suspicious financial patterns. Drives requirements for transaction monitoring, retention, and KYC integration." },
+  { t: "AOT", aka: "Ahead-Of-Time compilation", cat: "dotnet", def: "Compile to native machine code at build time instead of at runtime. Faster startup and smaller binaries; loses some peak throughput because the JIT can't specialise based on runtime profiling. .NET options: Native AOT, ReadyToRun." },
+  { t: "AP", aka: "Available + Partition-tolerant", cat: "distributed", def: "From CAP theorem. Under a network partition, choose availability over consistency — accept writes on both sides, reconcile later. Right for leaderboards, view counters, social feeds. Wrong for ledgers." },
+  { t: "API Gateway", cat: "arch", def: "An L7 entry point in front of internal services. Handles auth, rate-limiting, request routing, and sometimes response shaping. Typically per-tenant or per-product line." },
+  { t: "Append-only ledger", cat: "data", def: "A storage pattern where you only ever add new rows, never update or delete. Balances and other state are derived by aggregating entries. Easy to audit, easy to reverse (corrections are new entries)." },
+  { t: "Argon2id", cat: "security", def: "The modern recommended algorithm for password hashing. Memory-hard and slow by design — defeats GPU-based brute-force attacks. Successor to bcrypt and scrypt." },
+  { t: "Async / await", cat: "dotnet", def: "C# syntax that makes asynchronous code look sequential. The compiler rewrites the method into a state-machine struct that captures locals at each <code>await</code>, hooks a continuation onto the awaited Task, and returns the thread to the pool." },
+  { t: "At-least-once delivery", cat: "distributed", def: "Message-broker semantic where a message is guaranteed to be delivered, possibly more than once. Combined with idempotent consumers, this gives you exactly-once processing without the impossible exactly-once delivery." },
+  { t: "Avro", cat: "data", def: "A binary serialisation format with a schema registry, common in Kafka pipelines. Strong story for evolving schemas over time without breaking old consumers." },
+  { t: "Azure Front Door", cat: "net", def: "Microsoft's global L7 entry point. Routes by geography, host, path, or header; supports TLS termination, WAF, and origin failover." },
+  { t: "Azure Service Bus", cat: "distributed", def: "Microsoft's enterprise message broker. Queues and topics with per-message ack, dead-letter queues, sessions for ordered groups, and scheduled delivery. Use it for command-style workflows; use Kafka for log-replay analytics." },
+
+  // ---- B ----
+  { t: "Back-pressure", cat: "distributed", def: "Slowing producers when consumers can't keep up. Implemented via bounded queues (reject when full), consumer scale-out, or load-shedding at the edge. Without back-pressure, unbounded buffers eventually exhaust memory." },
+  { t: "Big-O notation", cat: "general", def: "How an operation's cost grows with input size. O(1) = constant, O(log n) = halves each step (binary search), O(n) = linear, O(n²) = quadratic. The first answer to 'will this scale?'" },
+  { t: "Blue-green deployment", cat: "ops", def: "Run two identical environments. Deploy the new version to the idle one, switch traffic over in one cut, keep the old one for instant rollback. Doubles infrastructure cost; gives instant rollback." },
+  { t: "Bonus engine", cat: "igaming", def: "A separate service that applies promotional rules (free spins, multipliers, tournaments) on top of base game outcomes. Kept separate so marketing changes don't require redeploying game code." },
+  { t: "Boxing", cat: "dotnet", def: "Wrapping a value type in a heap-allocated reference (e.g. assigning an <code>int</code> to <code>object</code>). Causes an allocation per boxing operation — costly in hot loops. Mutating a struct through an interface variable mutates the boxed copy, not the original." },
+  { t: "Bulkhead", cat: "distributed", def: "Resource isolation between consumers or tenants — separate thread pools, connection pools, or pods. Prevents one noisy tenant from starving others. Named after ship compartments that contain flooding." },
+
+  // ---- C ----
+  { t: "CAP theorem", cat: "distributed", def: "Under a network partition, a distributed system can guarantee at most two of: Consistency, Availability, Partition-tolerance. Since partitions are inevitable, the real choice is C vs A during a partition." },
+  { t: "CAS", aka: "Compare-And-Swap", cat: "dotnet", def: "An atomic CPU instruction that updates a value only if it still matches an expected old value. Foundation for lock-free data structures. .NET exposes it via <code>Interlocked.CompareExchange</code>." },
+  { t: "Cache line", cat: "general", def: "The unit of memory the CPU loads into cache, typically 64 bytes. Two threads writing to different variables on the same line causes the line to bounce between cores — see false sharing." },
+  { t: "Canary deployment", cat: "ops", def: "Route a small slice of traffic (1%, 5%) to the new version, watch the SLIs, expand if healthy. Fast rollback if the canary burns errors." },
+  { t: "Causal consistency", cat: "distributed", def: "Reads see a causally-consistent view of writes — if write B depends on write A, no observer sees B without seeing A first. Weaker than strong, stronger than eventual." },
+  { t: "CDC", aka: "Change Data Capture", cat: "data", def: "Stream every insert/update/delete from a database as an event. Standard pattern for syncing OLTP to OLAP, search indexes, or downstream services without dual-writes." },
+  { t: "cgroups", cat: "ops", def: "Linux kernel feature that limits and accounts for CPU, memory, and I/O usage of a process group. The <em>resource limits</em> half of containers (the other half is namespaces, for isolation)." },
+  { t: "ChaCha20", cat: "security", def: "A stream cipher used as an alternative to AES, often paired with the Poly1305 authenticator. Common in TLS 1.3 and on platforms without AES hardware acceleration." },
+  { t: "Circuit breaker", cat: "distributed", def: "A wrapper around a remote call that tracks failures. States: closed (allow), open (fail fast), half-open (probe). Prevents retry storms cascading downstream when a dependency is sick." },
+  { t: "Clean Architecture", cat: "arch", def: "Uncle Bob's framing of hexagonal architecture: concentric layers (Entities → Use Cases → Adapters → Frameworks) with the dependency rule that source code dependencies point inward only." },
+  { t: "ClickHouse", cat: "data", def: "Open-source columnar OLAP database. Wide scans + aggregations are very fast; per-row inserts kill performance (always batch). MergeTree family of engines for different access patterns." },
+  { t: "CLR", aka: "Common Language Runtime", cat: "dotnet", def: ".NET's runtime — handles type loading, JIT compilation, garbage collection, exception handling, and threading. The thing that turns IL into running code." },
+  { t: "Composite index", cat: "data", def: "A SQL index on multiple columns. Most useful when queries filter on the leftmost columns first (the leftmost-prefix rule). An index on (A, B, C) helps queries on A, on (A, B), or on (A, B, C) — but not on B alone." },
+  { t: "ConfigureAwait(false)", cat: "dotnet", def: "Tells <code>await</code> not to capture the current SynchronizationContext. Library code should use it everywhere; UI code rarely should. Avoids the classic deadlock where <code>.Result</code> blocks the thread the continuation needs." },
+  { t: "Consensus", cat: "distributed", def: "How a set of nodes agree on a value despite failures. Algorithms: Paxos (canonical), Raft (teachable rewrite), Zab (ZooKeeper). Foundation for replicated state machines." },
+  { t: "Consistent hashing", cat: "distributed", def: "A hashing scheme that minimises remapping when nodes are added or removed. Used in distributed caches, sharded databases, and load balancers to reduce the cost of resharding." },
+  { t: "Container", cat: "ops", def: "A process group running with isolated namespaces and resource limits, but sharing the host kernel. Lighter than a VM (no separate kernel) but with weaker isolation." },
+  { t: "Contract test", cat: "process", def: "A test that asserts a service still meets the contract its consumers expect. Tools like Pact let consumers publish expectations that the producer's CI verifies." },
+  { t: "Copy-on-write", cat: "general", def: "Memory pages stay shared between processes until one writes, at which point that page is copied. Enables cheap <code>fork</code> and snapshot-friendly file systems (ZFS, Btrfs)." },
+  { t: "CP", aka: "Consistent + Partition-tolerant", cat: "distributed", def: "From CAP. Under partition, refuse writes rather than risk divergence. Right for ledgers, wallets, jackpot contributions — anything where divergence would be a regulatory or financial incident." },
+  { t: "Crypto-shred", cat: "security", def: "Make encrypted data permanently unreadable by destroying the key. Used to satisfy GDPR right-to-be-forgotten against immutable storage — the records remain (regulator needs them), but the player's identity is unrecoverable." },
+  { t: "CSPRNG", aka: "Cryptographically Secure PRNG", cat: "security", def: "A random number generator suitable for cryptographic and gaming use. AES-CTR, ChaCha20, and Fortuna are common. Seeded from hardware entropy and re-seeded periodically." },
+
+  // ---- D ----
+  { t: "Dead-letter queue", aka: "DLQ", cat: "distributed", def: "Where a message goes after failing to process N times. Must be observable (alert on non-zero depth) and replayable (tool to re-inject after fix). A DLQ without a runbook is a hidden incident." },
+  { t: "Deployment (Kubernetes)", cat: "ops", def: "A declarative Kubernetes resource that manages a ReplicaSet to maintain N pod copies of an application. Handles rolling updates and rollbacks." },
+  { t: "Determinism", cat: "igaming", def: "Given the same inputs (seed, game version), the engine produces the same outputs. Required for spin reproducibility and audit. Drives the practice of versioning every game-engine binary." },
+  { t: "DLQ", cat: "distributed", def: "See Dead-letter queue." },
+  { t: "Dual-write problem", cat: "data", def: "Writing to two systems (e.g. database + message broker) where one might fail. Without coordination, you get partial state. Solved by transactional outbox or change data capture." },
+
+  // ---- E ----
+  { t: "ECDSA", cat: "security", def: "Elliptic-Curve Digital Signature Algorithm. The asymmetric signature scheme used in modern TLS, JWTs, and code signing. Smaller keys and signatures than RSA at equivalent security." },
+  { t: "Error budget", cat: "observability", def: "1 minus your SLO. If your SLO is 99.9%, your error budget is 0.1% of requests. Burn it fast → slow deploys; plenty left → ship aggressively. Forces a numerical conversation about reliability." },
+  { t: "Eventual consistency", cat: "distributed", def: "Replicas converge to the same state in finite time, but reads can be stale in the meantime. Useful when you specify the staleness window and the conflict-resolution rule. Useless when you don't." },
+  { t: "Exactly-once processing", cat: "distributed", def: "The achievable form of 'exactly-once'. Network delivery cannot be exactly-once (two-generals problem), but you can get exactly-once <em>processing</em> via at-least-once delivery + idempotent consumers." },
+  { t: "Exposure (sportsbook)", cat: "igaming", def: "Total potential payout if a given outcome wins. The book's risk on that outcome. Auto-suspend triggers when exposure breaches a configured threshold." },
+
+  // ---- F ----
+  { t: "False sharing", aka: "False cache-line invalidation", cat: "general", def: "Two threads writing different variables that happen to land on the same 64-byte cache line. The cache-coherence protocol bounces the line between cores even though there's no logical conflict — throughput collapses. Fix by padding hot variables to separate lines." },
+  { t: "FCI", aka: "Failover Cluster Instance", cat: "data", def: "Older SQL Server HA pattern. Two nodes share a SAN; only one mounts it at a time. The SAN itself is a single point of failure that must be made HA. Modern preference is Always On AG, which avoids shared storage." },
+  { t: "Feature flag", cat: "ops", def: "Runtime toggle to enable or disable a code path, often per-user or per-tenant. Decouples deploy from release: ship dark, toggle on when ready. Stale flags become tech debt." },
+  { t: "Fencing token", cat: "distributed", def: "A monotonically-increasing number issued with leader leases. Downstream services reject writes carrying a token older than the latest seen — defeats split-brain even when an old leader doesn't know it lost the lease." },
+  { t: "Flink", cat: "data", def: "An open-source stream-processing framework with proper event-time semantics, watermarks, and large keyed state backed by RocksDB. The natural fit for sliding-window per-key analytics." },
+  { t: "Fork (process)", cat: "general", def: "Unix system call that creates a child process that's a copy of the parent. Modern implementations use copy-on-write for the address space, so the copy is cheap." },
+
+  // ---- G ----
+  { t: "GC", aka: "Garbage Collection", cat: "dotnet", def: "Automatic memory management. .NET uses a generational GC: Gen 0 (new, collected often, cheap), Gen 1 (short-lived survivors), Gen 2 (long-lived, expensive to collect). Large objects (>85 KB) go in the LOH." },
+  { t: "GDPR", cat: "security", def: "EU regulation that gives individuals rights over their personal data, including the right to be forgotten. Forces specific data architectures around redaction, retention, and pseudonymisation." },
+  { t: "GLI", aka: "Gaming Laboratories International", cat: "igaming", def: "One of the major iGaming certification labs. Certifies RNGs, game logic, and entire RGS implementations against jurisdiction requirements. The other big name is BMM." },
+  { t: "GraphQL", cat: "arch", def: "A query language where clients describe exactly what they want from a single endpoint. Avoids over-fetching but adds caching complexity and needs query-budget controls to prevent expensive queries DoS-ing the backend." },
+  { t: "gRPC", cat: "arch", def: "A binary RPC framework over HTTP/2 with IDL via Protobuf, multi-language code-gen, and streaming support. Fast and strongly-typed; the natural choice for service-to-service inside a platform." },
+
+  // ---- H ----
+  { t: "Hazelcast", cat: "data", def: "An in-memory distributed data grid. Used for sub-millisecond reads of state shared across many service instances — e.g. live odds in a sportsbook." },
+  { t: "Helm", cat: "ops", def: "Kubernetes package manager. Templates manifests with values files per environment. Lets you ship a single 'chart' that deploys consistently to dev, staging, and prod." },
+  { t: "Hexagonal architecture", aka: "Ports & Adapters", cat: "arch", def: "Domain logic in the centre, infrastructure (DB, broker, HTTP) at the edges behind interfaces (ports) implemented by adapters. Dependencies point inward — domain knows nothing about persistence or transport." },
+  { t: "HLC", aka: "Hybrid Logical Clock", cat: "distributed", def: "A clock combining wall-clock time with a logical counter. Useful when you want monotonic ordering across nodes without TrueTime-class hardware. Bridges the gap between Lamport clocks and synchronised wall-clocks." },
+  { t: "HMAC", cat: "security", def: "Hash-based Message Authentication Code. A keyed cryptographic checksum — proves integrity AND authenticity. Faster than asymmetric signing; used to seal records on the hot path of audit pipelines." },
+  { t: "HPACK", cat: "net", def: "HTTP/2's header compression algorithm. Maintains a shared table of recently-seen headers; subsequent requests reference indexes rather than re-sending the full strings." },
+  { t: "HSM", aka: "Hardware Security Module", cat: "security", def: "A tamper-resistant hardware device that holds and uses private keys. Keys never leave the device; you call into the HSM to sign or decrypt. Compliance regimes often mandate HSMs for high-value keys." },
+  { t: "HTTP/1.1", cat: "net", def: "Text-based HTTP with keep-alive and pipelining. Suffers head-of-line blocking at the connection level — one slow response stalls the connection." },
+  { t: "HTTP/2", cat: "net", def: "Binary, multiplexed streams over a single TCP connection, with HPACK header compression. Eliminates application-level head-of-line blocking; still suffers TCP-level HOL." },
+  { t: "HTTP/3", cat: "net", def: "HTTP over QUIC (UDP). Eliminates TCP-level head-of-line blocking; faster connection establishment because the cryptographic handshake is folded into the transport setup." },
+
+  // ---- I ----
+  { t: "Idempotency", cat: "distributed", def: "An operation that produces the same result regardless of how many times it's invoked. <code>GET</code>, <code>PUT</code>, <code>DELETE</code> should be; <code>POST</code> typically isn't unless paired with an idempotency key." },
+  { t: "Idempotency key", cat: "distributed", def: "A unique ID the client supplies per intent. The server records <code>(key, result)</code> in a dedupe table with a TTL. On retry, returns the original result without re-executing the side effect." },
+  { t: "IDL", aka: "Interface Definition Language", cat: "arch", def: "A schema language for service contracts (e.g. <code>.proto</code> for gRPC, <code>.thrift</code> for Thrift). Generates client/server stubs across languages and lints schema-evolution rules." },
+  { t: "IL", aka: "Intermediate Language", cat: "dotnet", def: "The CPU-neutral instruction set the C# compiler emits. The JIT turns IL into machine code at runtime. Also called CIL or MSIL." },
+  { t: "Ingress", cat: "ops", def: "Kubernetes resource defining L7 routing into the cluster. Host and path rules, TLS termination, sometimes auth. Implemented by a controller (NGINX, Traefik, Azure AGIC)." },
+  { t: "Interlocked", cat: "dotnet", def: ".NET class exposing atomic operations on a single variable: <code>Increment</code>, <code>Add</code>, <code>CompareExchange</code>. Lock-free; the cheapest way to coordinate threads when only one variable is involved." },
+  { t: "Isolation level", cat: "data", def: "How a database protects a transaction from interference by others. Levels (weakest to strongest): Read Uncommitted, Read Committed, Repeatable Read, Snapshot/MVCC, Serializable. Stronger levels prevent more anomalies at higher contention cost." },
+
+  // ---- J ----
+  { t: "Jackpot pool", cat: "igaming", def: "A shared prize fund accumulated across many wagers. Networked across games, casinos, or jurisdictions. Triggered by a winning combination; a percentage of every contributing wager grows it." },
+  { t: "JIT", aka: "Just-In-Time compilation", cat: "dotnet", def: "Compile IL to machine code at runtime, on first call to each method. .NET uses a tiered JIT — hot methods are recompiled with more aggressive optimisations after they've proven their importance." },
+  { t: "Jitter", cat: "distributed", def: "Random offset added to retry intervals so that thousands of clients don't all retry at the same instant after a failure (the 'thundering herd'). Always pair exponential back-off with jitter." },
+  { t: "JSON Web Token", aka: "JWT", cat: "security", def: "A signed, base64-encoded JSON token carrying claims. Self-contained — receivers verify the signature without calling the issuer. Trade-off: cannot be revoked before expiry without a denylist (which defeats the stateless benefit)." },
+  { t: "Jurisdiction", cat: "igaming", def: "A regulatory territory with its own rules — RTP caps, allowed games, max bets, KYC/AML obligations. iGaming systems are jurisdiction-aware at the gateway." },
+  { t: "JWE", aka: "JSON Web Encryption", cat: "security", def: "Like JWT but the claims are encrypted, not just signed. Use when claims must be hidden from the holder." },
+
+  // ---- K ----
+  { t: "Kafka", cat: "distributed", def: "A distributed commit-log message broker. Topics are partitioned, durable, and replayable. Each partition has a single ordered consumer at a time. Foundation for event-sourcing, analytics pipelines, and stream processing." },
+  { t: "Key Vault", cat: "security", def: "Azure's managed secret store. RBAC-scoped, audited, integrates with managed identities so services fetch secrets at runtime instead of holding them in env-vars." },
+  { t: "Keyed state", cat: "data", def: "Per-key state held by a stream processor (Flink). All events for the same key route to the same task instance, where the task maintains state for that key. Backed by RocksDB on local SSD; can hold tens of GB per task." },
+  { t: "KMS", aka: "Key Management Service", cat: "security", def: "A managed service for cryptographic keys. Calls go to KMS to encrypt, decrypt, or sign — keys never leave. AWS KMS, Azure Key Vault HSM, Google Cloud KMS." },
+  { t: "KYC", aka: "Know Your Customer", cat: "igaming", def: "Verifying a player's identity at signup or before withdrawal. Required by most regulators. Drives integration with identity-verification providers." },
+
+  // ---- L ----
+  { t: "L4 load balancer", cat: "net", def: "Routes by IP and port — no application awareness. Highest throughput, lowest latency. Used for TLS pass-through and where the LB shouldn't terminate the protocol." },
+  { t: "L7 load balancer", cat: "net", def: "Routes by host, path, header, or cookie. Can do retries, caching, auth offload, canary splits. Slower than L4; standard inside a platform." },
+  { t: "Lamport clock", cat: "distributed", def: "A simple logical clock — each node has a counter, increments it on every event, and includes it in messages. Receivers max(local, received) + 1. Gives total ordering of causally-related events." },
+  { t: "Latched odds", cat: "igaming", def: "Sportsbook policy that accepts a bet at the price the player saw, provided the live price hasn't moved beyond a configured tolerance. Balances UX (don't reject every bet) against operator risk (don't accept stale prices indefinitely)." },
+  { t: "LB", aka: "Load Balancer", cat: "net", def: "See L4 / L7 load balancer." },
+  { t: "Leader election", cat: "distributed", def: "How a cluster picks one node to coordinate. Mechanisms: quorum-based (Raft, Paxos), lease-based (with renewal), or external coordinator (ZooKeeper, etcd). Always pair with fencing tokens to defeat split-brain." },
+  { t: "Ledger entry", cat: "igaming", def: "A single immutable record in a wallet — debit, credit, with timestamp and txKey. Balance is derived as the sum of ledger entries (or a snapshot plus recent entries)." },
+  { t: "Linearizability", cat: "distributed", def: "The strongest consistency model — every operation appears to take effect atomically at some point between its invocation and response, in a total order that respects real time. Required for balances, wagers." },
+  { t: "Liveness probe", cat: "ops", def: "A Kubernetes health check. If it fails, the pod is restarted. Should test only the pod itself — a liveness probe that calls a downstream causes cascading restarts when the dependency is sick." },
+  { t: "LOH", aka: "Large Object Heap", cat: "dotnet", def: "Where .NET allocates objects larger than 85 KB. Collected as part of Gen 2 (expensive). Excessive LOH allocation causes fragmentation and GC pressure — pool large buffers via <code>ArrayPool&lt;T&gt;</code>." },
+
+  // ---- M ----
+  { t: "Managed identity", cat: "security", def: "Azure pattern where an Azure resource (VM, App Service, AKS pod) gets a short-lived token automatically, without storing credentials. Calls to Azure services authenticate via the token. Eliminates long-lived secrets." },
+  { t: "Materialised view", cat: "data", def: "A view whose result is precomputed and stored. ClickHouse can maintain materialised views on insert, giving you second-fresh aggregates without a periodic batch job." },
+  { t: "Merkle tree", cat: "security", def: "A binary tree of hashes — each non-leaf node hashes its children, ending at a single root that summarises every leaf. Lets you prove a leaf is in the tree with O(log N) sibling hashes (a Merkle proof). Foundation for tamper-evident logs and blockchains." },
+  { t: "MergeTree", cat: "data", def: "ClickHouse's family of storage engines. Variants: ReplicatedMergeTree (replicated), SummingMergeTree (auto-aggregates on merge), AggregatingMergeTree (custom aggregations), CollapsingMergeTree (handles deletes via paired rows)." },
+  { t: "MESI protocol", cat: "general", def: "The cache-coherence protocol that keeps multi-core CPU caches consistent. States: Modified, Exclusive, Shared, Invalid. Why false sharing kills performance — writes invalidate other cores' copies of the line." },
+  { t: "Microservices", cat: "arch", def: "Architecture style where capabilities are split into independently-deployable services with their own data stores. Wins: independent release cadence, language choice, fault isolation. Costs: distributed transactions, eventual consistency, ops complexity." },
+  { t: "MirrorMaker", cat: "distributed", def: "Kafka's tool for replicating topics across clusters or regions. MirrorMaker 2 is the modern version — supports active-active with offset translation." },
+  { t: "Mock", cat: "process", def: "A test double that records calls and returns canned responses. Useful for isolating a unit; overused, leads to tests that pass while production fails (the mocks have drifted from reality)." },
+  { t: "Modular monolith", cat: "arch", def: "A single deployable, but with strict internal module boundaries enforced via packages, namespaces, or build-time rules. Preserves the option to split later without paying microservices ops cost now." },
+  { t: "Monitor (lock)", cat: "dotnet", def: "The synchronisation primitive behind C#'s <code>lock</code> keyword. Reentrant, in-process, very cheap when uncontended. Always lock on a private <code>readonly object</code>; never on <code>this</code>, <code>typeof</code>, or strings." },
+  { t: "mTLS", aka: "Mutual TLS", cat: "security", def: "TLS where both client and server present certificates. Authenticates both ends of the connection; common for service-to-service inside a platform. Requires cert lifecycle management (rotation, revocation)." },
+  { t: "MVCC", aka: "Multi-Version Concurrency Control", cat: "data", def: "Database technique where readers don't block writers and vice versa. Each transaction sees a consistent snapshot of the data. Underlies Snapshot isolation in SQL Server, Postgres MVCC, Oracle." },
+
+  // ---- N ----
+  { t: "Namespace (Linux)", cat: "ops", def: "Kernel feature isolating a process's view of the system: PID, network, mount, user, IPC, UTS. The <em>isolation</em> half of containers (cgroups handle resource limits)." },
+  { t: "NFR", aka: "Non-Functional Requirement", cat: "process", def: "Requirements about <em>how</em> the system behaves rather than what it does — latency, throughput, availability, security. The first thing to nail down in a system design — they drive every architectural choice." },
+  { t: "#noestimates", cat: "process", def: "A philosophy that argues effort estimates are low-signal ritual. Instead, slice work into uniformly small chunks and count throughput per week. A useful counterweight to estimation theatre, not a dogma." },
+
+  // ---- O ----
+  { t: "OIDC", aka: "OpenID Connect", cat: "security", def: "An identity layer on top of OAuth2. Adds the ID token (proof of who the user is) alongside OAuth's access token (proof of what they can do). The modern standard for federated authentication." },
+  { t: "OLAP", aka: "Online Analytical Processing", cat: "data", def: "Workload shape: columnar storage, denormalised, optimised for wide scans and aggregations over many rows. ClickHouse, Snowflake, BigQuery, Synapse." },
+  { t: "OLTP", aka: "Online Transaction Processing", cat: "data", def: "Workload shape: row storage, normalised, optimised for short transactions touching few rows. SQL Server, Postgres, MySQL." },
+  { t: "OpenTelemetry", cat: "observability", def: "Vendor-neutral standard for emitting logs, metrics, and traces. SDKs in every language; export to any compliant backend (Jaeger, Tempo, Datadog, Grafana). The way out of vendor lock-in for telemetry." },
+  { t: "Operator (iGaming)", cat: "igaming", def: "A casino or sportsbook brand that integrates with an iGaming platform. Owns the player relationship and brand; rents game content from studios via the RGS." },
+  { t: "Optimistic concurrency", cat: "data", def: "Read a version number with the data; on update, check the version still matches; if not, retry. Cheap when conflicts are rare; expensive under contention." },
+  { t: "Orleans", cat: "dotnet", def: "Microsoft's virtual-actor framework for .NET. Each entity is a 'grain' — single-writer in-memory, automatically activated and rebalanced. Eliminates concurrency bugs by construction inside a grain." },
+  { t: "Outbox pattern", cat: "data", def: "Solution to the dual-write problem. Write the business row and an outbox row in the same DB transaction; a poller reads the outbox and publishes to the broker. Atomic with the business write; eventual on the publish." },
+
+  // ---- P ----
+  { t: "PACELC", cat: "distributed", def: "Extension of CAP. Under Partition, choose A or C; Else, choose Latency or Consistency. Captures that even outside a partition, distributed systems trade latency for stronger consistency." },
+  { t: "Page table", cat: "general", def: "Hardware-assisted lookup table that maps virtual memory addresses to physical RAM. Walked by the MMU on each memory access; recent translations cached in the TLB." },
+  { t: "Pact", cat: "process", def: "Tool for consumer-driven contract testing. Consumers publish what they expect from a producer; the producer's CI verifies it still meets the contract. Catches inter-service breakage early without full E2E tests." },
+  { t: "Parameter sniffing", cat: "data", def: "SQL Server caches the execution plan generated for the first parameter values seen, then reuses it. Bad when the first values are atypical — subsequent queries with different distributions hit a poor plan. Fix with <code>OPTION (RECOMPILE)</code> or plan guides." },
+  { t: "Parquet", cat: "data", def: "Columnar file format with built-in compression and statistics. Standard for cold-tier analytical storage on blob (S3, ADLS). Supports predicate pushdown — readers can skip irrelevant blocks." },
+  { t: "Partition (database)", cat: "data", def: "Splitting a large table into segments by a partition key. Helps query performance (partition pruning) and maintenance (truncate old partitions cheaply)." },
+  { t: "Partition (Kafka)", cat: "distributed", def: "A Kafka topic is split into N partitions, each an ordered durable log with one consumer at a time. Choosing the right partition key is load-bearing — it determines ordering guarantees and parallelism." },
+  { t: "Paxos", cat: "distributed", def: "The canonical consensus algorithm. Proposers and acceptors agree on a value via two phases (prepare, accept). Famously hard to understand correctly; Raft is the teachable rewrite." },
+  { t: "PFS", aka: "Perfect Forward Secrecy", cat: "security", def: "TLS property that compromise of a long-term private key doesn't compromise past sessions. Achieved with ephemeral key exchange (ECDHE). Mandatory in TLS 1.3." },
+  { t: "PKCE", aka: "Proof Key for Code Exchange", cat: "security", def: "OIDC/OAuth2 extension that defeats authorisation-code interception. The client generates a verifier, sends its hash on auth, then proves possession of the verifier when redeeming the code. Mandatory for public clients (SPAs, mobile)." },
+  { t: "Pod", cat: "ops", def: "The smallest deployable unit in Kubernetes. One or more containers sharing network and storage. Pods are ephemeral — replaced freely by their controller." },
+  { t: "Polly", cat: "dotnet", def: ".NET resilience library. Composable policies: retry, timeout, circuit breaker, bulkhead, fallback, cache. The standard way to wrap remote calls with proper failure handling." },
+  { t: "Postgres", cat: "data", def: "Open-source relational database with strong correctness, MVCC, JSONB, and a pragmatic feature set. The default OLTP choice when you don't have a reason to pick something else." },
+  { t: "Probe (Kubernetes)", cat: "ops", def: "Health check on a pod. Liveness (restart on fail), readiness (drop from LB on fail), startup (lenient liveness for slow boots)." },
+  { t: "Property-based testing", cat: "process", def: "Tests that assert invariants over many randomly-generated inputs — 'reverse(reverse(x)) == x for all lists x'. Tools: FsCheck, Hypothesis, QuickCheck. Finds edge cases humans miss." },
+  { t: "Protobuf", cat: "data", def: "Google's binary serialisation format with schema-driven evolution. Compact, fast, with strict rules (don't reuse field numbers). Default wire format for gRPC." },
+  { t: "Pseudonymisation", cat: "security", def: "Replacing direct identifiers with pseudonyms (a hash, an opaque ID) so data can be processed without exposing PII. Reversible only via a separately-protected mapping table." },
+
+  // ---- Q ----
+  { t: "QoS class (Kubernetes)", cat: "ops", def: "Quality-of-Service class assigned to a pod based on its resource requests and limits: Guaranteed (requests=limits), Burstable (requests<limits), BestEffort (none). Determines eviction order under node pressure." },
+  { t: "QUIC", cat: "net", def: "A UDP-based transport with reliability, flow control, and stream multiplexing in user-space. Foundation for HTTP/3. Avoids TCP head-of-line blocking; faster handshake." },
+  { t: "Quorum", cat: "distributed", def: "A majority of nodes. Consensus algorithms require quorums of read and write that overlap, so any read sees the latest committed write. Tolerates up to (N-1)/2 failures." },
+
+  // ---- R ----
+  { t: "Raft", cat: "distributed", def: "A consensus algorithm designed for understandability. Single leader per term, log replication, safe leader election with randomised timeouts. Implementations: etcd, Consul, CockroachDB." },
+  { t: "Read replica", cat: "data", def: "A read-only copy of a database, kept in sync with the primary. Offloads read traffic; gives some HA. Replication lag means reads can be stale — quote the staleness window." },
+  { t: "RED method", cat: "observability", def: "Per-service dashboard pattern: Rate (requests/sec), Errors (errors/sec), Duration (p50/p99 latency). Keep one set per endpoint, not just service-wide — bad endpoints hide in healthy averages." },
+  { t: "ReplicaSet", cat: "ops", def: "Kubernetes controller that maintains N pod copies. Wrapped by a Deployment for rolling updates and rollbacks." },
+  { t: "REST", cat: "arch", def: "Architectural style based on HTTP verbs over resources. In practice, most 'REST' is RPC-over-HTTP with JSON. Don't argue Roy Fielding orthodoxy in interviews." },
+  { t: "RGS", aka: "Remote Gaming Server", cat: "igaming", def: "The backend that hosts iGaming game logic, calls a certified RNG, integrates with the player wallet, and records every spin for audit. Multi-tenant — one RGS hosts many games for many operators." },
+  { t: "Ring-fencing", cat: "igaming", def: "Restricting a jackpot pool or game configuration to specific jurisdictions. Enforced at the gateway by jurisdiction tags before contributions reach the engine." },
+  { t: "Risk engine", cat: "igaming", def: "Sportsbook component that aggregates exposure per market in real-time and emits suspend or line-move signals when thresholds breach. Read off the bet stream asynchronously, off the critical path." },
+  { t: "RNG", aka: "Random Number Generator", cat: "igaming", def: "The source of randomness in game outcomes. In iGaming, must be a CSPRNG, certified by labs like GLI/BMM, seeded from hardware entropy. The RGS calls into a shared, isolated RNG service." },
+  { t: "RocksDB", cat: "data", def: "An embedded key-value store from Facebook. Used as the local state backend for Flink and the storage engine for many distributed databases. Optimised for write-heavy workloads on SSD." },
+  { t: "Roslyn", cat: "dotnet", def: ".NET's open-source compiler. Turns C# (or VB.NET) into IL. Also exposes APIs for analyzers, code fixes, and source generators." },
+  { t: "Rolling update", cat: "ops", def: "Deployment pattern where new pods replace old ones gradually, maintaining capacity throughout. Standard in Kubernetes via Deployment objects." },
+  { t: "RPO", aka: "Recovery Point Objective", cat: "ops", def: "Maximum acceptable data loss measured in time. RPO=0 means no data loss; RPO=15min means up to 15 minutes of recent transactions can be lost on failover. Drives sync vs async replication choice." },
+  { t: "RTO", aka: "Recovery Time Objective", cat: "ops", def: "Maximum acceptable downtime. RTO=30s means service must be back inside 30 seconds. Drives standby topology — warm vs hot vs cold standby." },
+  { t: "RTP", aka: "Return to Player", cat: "igaming", def: "The percentage of stake a game returns to players over the long run. Set per game, per jurisdiction. Audited by certification labs. A 96% RTP slot returns £96 of every £100 wagered, on average." },
+  { t: "RyuJIT", cat: "dotnet", def: ".NET's modern JIT compiler. Turns IL into machine code at runtime; handles tiered compilation, inlining, and CPU-specific intrinsics." },
+
+  // ---- S ----
+  { t: "Saga", cat: "arch", def: "A sequence of local transactions where each has a compensating action. If any step fails, prior steps are undone via their compensations. The standard pattern for cross-service workflows that can't share a database transaction." },
+  { t: "SAN", aka: "Storage Area Network", cat: "data", def: "Centralised block storage accessed over fibre or iSCSI. Used by older HA SQL setups (FCI) where multiple DB nodes mount the same SAN. The SAN itself becomes a single point of failure that needs HA." },
+  { t: "SAST / SCA", cat: "security", def: "Static Application Security Testing (scans your code) and Software Composition Analysis (scans your dependencies). Both run in CI to catch issues before merge." },
+  { t: "SemaphoreSlim", cat: "dotnet", def: ".NET counting semaphore — limits N concurrent holders. <code>WaitAsync</code> makes it async-friendly so you don't burn a thread waiting." },
+  { t: "Sequence diagram", cat: "process", def: "UML diagram showing time-ordered messages between components. The bread-and-butter of architecture reviews — answers 'what calls what, in what order'." },
+  { t: "Serializable", cat: "data", def: "The strongest SQL isolation level — transactions appear to execute in some serial order, even if they ran concurrently. Implemented via range locks; expensive under contention." },
+  { t: "SHA-256", cat: "security", def: "A 256-bit cryptographic hash function. Standard for integrity checks, fingerprints, Merkle trees. Not for password storage on its own — use Argon2id." },
+  { t: "Sharding", cat: "distributed", def: "Splitting data across multiple machines by a sharding key. Hashing key spreads load; range-based key gives ordered iteration. Cross-shard transactions are painful — design so the common path is single-shard." },
+  { t: "SLA", aka: "Service Level Agreement", cat: "observability", def: "A contractual reliability commitment with consequences (service credits, refunds). Distinct from an SLO — SLOs are internal targets; SLAs are external promises." },
+  { t: "SLI", aka: "Service Level Indicator", cat: "observability", def: "A measured quantity describing service quality — e.g. 'percentage of requests under 200ms'. Pick SLIs the user cares about (end-to-end latency), not what's easy to measure (server-side latency)." },
+  { t: "Sliding window", cat: "data", def: "A streaming aggregation that updates continuously as time advances — 'as of now, sum of the last hour'. Contrast with a tumbling window, which only emits at boundary." },
+  { t: "SLO", aka: "Service Level Objective", cat: "observability", def: "An internal reliability target — e.g. '99.9% of requests under 200ms'. Drives the error budget; gates how aggressively you can deploy." },
+  { t: "Snapshot isolation", cat: "data", def: "MVCC isolation level — readers see a consistent snapshot from when the transaction began, without blocking writers. SQL Server's default for many workloads." },
+  { t: "Spinlock", cat: "general", def: "A lock that busy-waits in a loop instead of yielding to the OS. Faster than monitor for very short critical sections on multi-core; terrible under contention. Use when the critical section is nanoseconds." },
+  { t: "Split-brain", cat: "distributed", def: "Two nodes both think they're the leader after a partition. Causes divergent writes. Defended against by quorum elections (overlapping majorities) and fencing tokens." },
+  { t: "SQL Server AG", cat: "data", def: "See AG / Always On Availability Group." },
+  { t: "SSE", aka: "Server-Sent Events", cat: "net", def: "Unidirectional server-to-client streaming over HTTP. Simpler than WebSocket; one-way only; auto-reconnects. Good for live updates that don't need a return channel." },
+  { t: "SSRF", aka: "Server-Side Request Forgery", cat: "security", def: "Vulnerability where an attacker tricks the server into making a request to a target the attacker can't reach directly — often the cloud metadata endpoint. Defend with outbound allowlists and careful URL parsing." },
+  { t: "Statically-typed serialisation", cat: "data", def: "See Protobuf, Avro, Thrift. Schema is enforced at compile time; messages are smaller and parsed faster than JSON." },
+  { t: "Stream processing", cat: "data", def: "Continuously transforming events as they arrive, with proper handling of out-of-order delivery via watermarks. Frameworks: Flink, Kafka Streams, Spark Structured Streaming." },
+  { t: "Streaming replication", cat: "data", def: "Database replication that continuously ships transaction-log records from primary to secondary. Sync (commit waits for ack) or async (commit returns immediately)." },
+  { t: "Strong consistency", cat: "distributed", def: "Every read sees the latest write. Synonymous with linearizability for our purposes. Required for balances, wagers, anything where stale reads are unsafe." },
+  { t: "Suspend (sportsbook)", cat: "igaming", def: "The book pulling a market — no new bets accepted while suspended. Triggered manually (e.g. a goal scored) or auto via the risk engine breaching exposure thresholds." },
+  { t: "Surrogate pair", cat: "general", def: "Two 16-bit code units that together represent a single Unicode codepoint above U+FFFF. UTF-16 strings need careful handling to avoid splitting a pair when truncating." },
+
+  // ---- T ----
+  { t: "Task.Run", cat: "dotnet", def: "Schedules CPU-bound work onto the thread pool. Use for long CPU work that would starve the request thread; <strong>don't</strong> use to wrap I/O-bound async calls in ASP.NET — they're already async." },
+  { t: "TCP", cat: "net", def: "Reliable, ordered, congestion-controlled transport. Foundation for HTTP/1, HTTP/2, gRPC, SQL. Establishes via 3-way handshake; tears down with FIN/ACK and TIME_WAIT." },
+  { t: "Terraform", cat: "ops", def: "HashiCorp's infrastructure-as-code tool. Declarative, multi-cloud, with a state file as source of truth. Keep state remote and locked; align module boundaries with blast radius." },
+  { t: "TIME_WAIT", cat: "net", def: "TCP state after a connection close, held for 2×MSL (~minutes) to absorb late packets. High connection churn can exhaust ephemeral ports — mitigate with connection reuse." },
+  { t: "TLB", aka: "Translation Lookaside Buffer", cat: "general", def: "A CPU cache of recent virtual-to-physical address translations. Without it, every memory access would walk the page table. Context switches and large working sets cause TLB misses." },
+  { t: "TLS 1.3", cat: "security", def: "Modern TLS — 1-RTT handshake (0-RTT for resumption, with replay risk), perfect forward secrecy mandatory, all post-ServerHello messages encrypted, legacy ciphers removed." },
+  { t: "Topic (Kafka)", cat: "distributed", def: "A named, durable, partitioned commit log. Producers write; consumers read at their own pace from any offset. Replayable until retention expires." },
+  { t: "Transactional outbox", cat: "data", def: "See Outbox pattern." },
+  { t: "Trunk-based development", cat: "ops", def: "Short-lived branches, frequent merges to main. Combined with feature flags for in-flight features. Smaller diffs, easier review, less merge hell. Requires strong CI." },
+  { t: "Tumbling window", cat: "data", def: "A streaming aggregation that emits at fixed boundaries — 'every hour, summarise the last hour'. Contrast with sliding window, which updates continuously." },
+  { t: "Two-generals problem", cat: "distributed", def: "The proof that no protocol over an unreliable channel can guarantee mutual agreement. Why exactly-once <em>delivery</em> is impossible; we settle for exactly-once <em>processing</em>." },
+  { t: "txKey", cat: "igaming", def: "A unique transaction key supplied by the caller per intent. Stored server-side for a retry window so duplicates return the original result. The implementation of idempotency for wallet operations." },
+
+  // ---- U ----
+  { t: "UDP", cat: "net", def: "Connectionless transport — fire-and-forget, no order, no retry, no congestion control. Lightweight, low latency. Used by DNS, NTP, VoIP, video streaming, QUIC." },
+  { t: "UML", aka: "Unified Modeling Language", cat: "process", def: "A family of diagram types for software design — use case, activity, sequence, class, component, deployment, state. Sequence is the bread-and-butter for architecture reviews." },
+  { t: "Union filesystem", cat: "ops", def: "Stacked layers of read-only and writable file systems, presented as a single tree. The technology behind container image layers — common base layers shared on disk." },
+  { t: "USE method", cat: "observability", def: "Per-resource dashboard pattern: Utilisation, Saturation, Errors. Pairs with RED — RED at the service layer, USE at the host/pod/disk layer." },
+  { t: "UTF-8", cat: "general", def: "Variable-length Unicode encoding (1–4 bytes per character). ASCII-compatible, the default for files and wire formats." },
+  { t: "UTF-16", cat: "general", def: "Variable-length Unicode encoding (2 or 4 bytes). The internal representation of .NET and Java strings. Codepoints above U+FFFF use surrogate pairs." },
+
+  // ---- V ----
+  { t: "ValueTask", cat: "dotnet", def: "A struct-based alternative to <code>Task</code> that avoids heap allocation when the result is often already available (cache hits). Trickier to use than Task — don't await the same ValueTask twice." },
+  { t: "Vector clock", cat: "distributed", def: "A logical clock that captures partial ordering across many nodes. Each node maintains a vector of counters, one per known node. Detects concurrent updates that Lamport clocks miss." },
+  { t: "Virtual actor", cat: "dotnet", def: "An actor that the runtime activates on demand and rebalances across a cluster — never explicitly created or destroyed by user code. Orleans grains are virtual actors." },
+  { t: "Virtual memory", cat: "general", def: "Each process sees its own private flat address space; the MMU translates to physical RAM via page tables. Enables process isolation, paging, and memory-mapped files." },
+
+  // ---- W ----
+  { t: "Wager", cat: "igaming", def: "A bet placed on a game outcome. Carries a player ID, game ID, amount, and timestamp. The atomic unit of audit and contribution accounting." },
+  { t: "Wallet", cat: "igaming", def: "The system of record for player balances. Single-writer per account (e.g. via Orleans grain), append-only ledger, sync replication for RPO=0. The most consistency-critical component in iGaming." },
+  { t: "Watermark", cat: "data", def: "A stream-processor's notion of 'event-time has progressed to T'. All events with timestamps before T should have arrived. Anything later is 'late'; allowed-lateness controls how late is too late." },
+  { t: "WebSocket", cat: "net", def: "Full-duplex, long-lived connection over a single TCP/TLS handshake. Standard for live updates needing both directions. Scales differently from request/response — keep the gateway tier separate." },
+  { t: "WIP limit", cat: "process", def: "Work-in-progress cap, central to Kanban. Limits the number of items in flight; forces finishing before starting; surfaces bottlenecks. Throughput improves because cycle time drops." },
+  { t: "WORM", aka: "Write Once Read Many", cat: "security", def: "Storage that, once written, cannot be modified — even by privileged operators. Used for regulatory archives. Cloud blob services support WORM at the file level via retention locks." },
+  { t: "WSL2", cat: "ops", def: "Windows Subsystem for Linux v2 — a real Linux kernel running in a lightweight VM, integrated with Windows. Docker Desktop runs Linux containers via WSL2." },
+
+  // ---- X ----
+  { t: "X.509", cat: "security", def: "The standard format for digital certificates. Carries a public key, identity, validity period, issuer, and a signature chain to a root CA. Foundation for TLS and code-signing PKI." },
+
+  // ---- Z ----
+  { t: "Zero-RTT (0-RTT)", cat: "security", def: "TLS 1.3 feature where a resumed connection can send application data in the very first packet. Saves a round-trip; trade-off: replay risk, so don't use it for non-idempotent requests." },
+  { t: "ZSET", cat: "data", def: "Redis sorted set. Members ordered by score; supports <code>ZADD</code>, <code>ZRANK</code>, <code>ZRANGE</code>, <code>ZRANGEBYSCORE</code> in O(log N). The right primitive for live leaderboards and ranked queues." },
+];
+
+// =================================================================
+function normalize(s) { return s.toLowerCase().replace(/[^a-z0-9]/g, ""); }
+
+const filterEl = document.getElementById("filters");
+const searchEl = document.getElementById("search");
+const contentEl = document.getElementById("content");
+const letterBarEl = document.getElementById("letterBar");
+const countEl = document.getElementById("count");
+
+let activeCat = "all";
+let query = "";
+
+const allCats = [["all", "All"], ...Object.entries(cats)];
+filterEl.innerHTML = allCats.map(([k, v]) => `<button class="filter ${k === 'all' ? 'active' : ''}" data-cat="${k}">${v}</button>`).join("");
+filterEl.querySelectorAll(".filter").forEach(btn => {
+  btn.addEventListener("click", () => {
+    filterEl.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeCat = btn.dataset.cat;
+    render();
+  });
+});
+
+searchEl.addEventListener("input", () => {
+  query = searchEl.value.trim().toLowerCase();
+  render();
+});
+
+function highlight(text, q) {
+  if (!q) return text;
+  const re = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "ig");
+  return text.replace(re, "<mark>$1</mark>");
+}
+
+function render() {
+  let filtered = terms.filter(t => activeCat === "all" || t.cat === activeCat);
+  if (query) {
+    filtered = filtered.filter(t => {
+      const hay = (t.t + " " + (t.aka || "") + " " + t.def).toLowerCase();
+      return hay.includes(query);
+    });
+  }
+  filtered.sort((a, b) => a.t.toLowerCase().localeCompare(b.t.toLowerCase()));
+
+  countEl.textContent = `${filtered.length} term${filtered.length === 1 ? '' : 's'}`;
+
+  if (filtered.length === 0) {
+    contentEl.innerHTML = `<div class="empty">No matches.</div>`;
+    letterBarEl.innerHTML = "";
+    return;
+  }
+
+  const groups = {};
+  filtered.forEach(t => {
+    const letter = t.t[0].toUpperCase();
+    (groups[letter] = groups[letter] || []).push(t);
+  });
+
+  const letters = Object.keys(groups).sort();
+  letterBarEl.innerHTML = letters.map(l => `<a href="#letter-${l}">${l}</a>`).join("");
+
+  contentEl.innerHTML = letters.map(letter => `
+    <div class="letter-section" id="letter-${letter}">
+      <h2>${letter}</h2>
+      ${groups[letter].map(t => `
+        <div class="term">
+          <div class="term-head">
+            <span class="term-name">${highlight(t.t, query)}</span>
+            ${t.aka ? `<span class="term-aka">${highlight(t.aka, query)}</span>` : ""}
+            <span class="term-cat ${t.cat}">${cats[t.cat] || t.cat}</span>
+          </div>
+          <div class="term-def">${query ? highlight(t.def, query) : t.def}</div>
+        </div>
+      `).join("")}
+    </div>
+  `).join("");
+}
+
+render();
+</script>
+</body>
+</html>

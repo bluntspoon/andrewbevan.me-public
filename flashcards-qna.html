@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcards Q&amp;A</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0f1419;
+    color: #e6edf3;
+    line-height: 1.6;
+    padding-bottom: 40px;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  header h1 { font-size: 16px; font-weight: 600; flex: 1; }
+  header a {
+    font-size: 13px;
+    color: #2f81f7;
+    text-decoration: none;
+  }
+  header a:hover { text-decoration: underline; }
+  .container { max-width: 760px; margin: 0 auto; padding: 24px 16px; }
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8b949e;
+    margin: 32px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #21262d;
+  }
+  .section-title:first-child { margin-top: 0; }
+  .card {
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .card-q {
+    background: #1c2128;
+    padding: 14px 16px;
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+  }
+  .card-id {
+    font-size: 11px;
+    color: #6e7681;
+    font-family: "SF Mono", Menlo, monospace;
+    flex-shrink: 0;
+  }
+  .card-q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .card-a {
+    background: #161b22;
+    padding: 14px 16px;
+    font-size: 14px;
+    border-top: 1px solid #30363d;
+  }
+  .card-a ul { margin: 6px 0 6px 18px; }
+  .card-a li { margin-bottom: 5px; }
+  .card-a strong { color: #f0f6fc; }
+  .card-a code {
+    background: #0d1117;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    color: #ffa657;
+  }
+  .trap {
+    margin-top: 10px;
+    padding: 9px 12px;
+    background: #2d1b1b;
+    border-left: 3px solid #f85149;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .trap strong { color: #ff7b72; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Flashcards Q&amp;A</h1>
+  <a href="/arch/">← Back to Architecture</a>
+</header>
+<div class="container">
+
+  <div class="section-title">Depth — A1–A25</div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A1</span><span class="card-q-text">Value vs reference types in .NET</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>Value type</strong>: holds data directly. Copied on assignment / parameter pass. Structs, primitives, enums.</li>
+        <li><strong>Reference type</strong>: holds a pointer to a heap object. Assignment copies the pointer; both vars point at the same object. Classes, arrays, strings, delegates.</li>
+        <li><code>string</code> is reference but immutable — feels value-like.</li>
+        <li><strong>Boxing</strong>: assigning a value type to <code>object</code> or interface — heap allocation + copy.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Mutating a struct through an interface mutates the boxed copy, not the original. Looks like a no-op bug.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A2</span><span class="card-q-text">Big-O / collection complexity in .NET</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>List&lt;T&gt;</strong>: O(1) append, O(n) insert/remove mid, O(n) search.</li>
+        <li><strong>Dictionary / HashSet</strong>: O(1) avg, O(n) worst (collisions). Not thread-safe.</li>
+        <li><strong>SortedDictionary</strong>: O(log n), iterates in key order.</li>
+        <li><strong>ConcurrentDictionary</strong>: striped locks. Use <code>AddOrUpdate</code> / <code>GetOrAdd</code> for atomic compounds.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Dictionary enumeration order is undefined. Don't rely on insertion order.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A3</span><span class="card-q-text">Bitwise operators — when do you use them?</span></div>
+    <div class="card-a">
+      <ul>
+        <li><code>&amp;</code> test, <code>|</code> set, <code>&amp;~</code> clear, <code>^</code> toggle.</li>
+        <li><code>&lt;&lt;</code> / <code>&gt;&gt;</code> = ×/÷ powers of 2.</li>
+        <li>Uses: <strong>[Flags] enums</strong>, packing small fields, hash-mixing.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Signed &gt;&gt; sign-extends — shifting a negative stays negative. Use unsigned or C# 11's &gt;&gt;&gt;.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A4</span><span class="card-q-text">Unicode &amp; encoding — what breaks?</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>UTF-8</strong>: 1–4 bytes, ASCII-compatible, default for files and wire.</li>
+        <li><strong>UTF-16</strong>: .NET / Java string internal; surrogate pairs for codepoints &gt; U+FFFF.</li>
+        <li><code>string.Length</code> returns code units, not characters.</li>
+        <li>Normalise (NFC) before compare or hash.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Truncating a UTF-16 string at an arbitrary index can split a surrogate pair → invalid string.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A5</span><span class="card-q-text">JSON vs Protobuf vs Avro</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>JSON</strong>: human, schemaless, large, slow. Public APIs.</li>
+        <li><strong>Protobuf</strong>: binary, schema-driven, compact, fast. Don't reuse field numbers. gRPC default.</li>
+        <li><strong>Avro</strong>: schema registry, Kafka common, strong evolution.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Proto3 can't distinguish default value from absent. Use 'optional' or wrappers when nullability matters.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A6</span><span class="card-q-text">TCP vs UDP — when would you pick UDP?</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>TCP</strong>: reliable, ordered, congestion-controlled. HTTP, gRPC, SQL.</li>
+        <li><strong>UDP</strong>: fire-and-forget, low latency. DNS, NTP, VoIP, video.</li>
+        <li><strong>QUIC</strong>: UDP + reliability + multiplexing in user-space. HTTP/3 runs on it. No TCP head-of-line blocking.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> 'UDP is faster' is misleading. TCP wins bulk; UDP wins small + latency-sensitive.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A7</span><span class="card-q-text">Mutex primitives — pick one for X</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>Monitor (lock)</strong>: in-process, reentrant, cheap. Default.</li>
+        <li><strong>Mutex</strong>: kernel object, named, cross-process. Slow.</li>
+        <li><strong>SemaphoreSlim</strong>: counting, async-friendly (WaitAsync).</li>
+        <li><strong>ReaderWriterLockSlim</strong>: many readers / one writer.</li>
+        <li><strong>Spinlock</strong>: busy-wait, very short sections only.</li>
+        <li><strong>Interlocked</strong>: lock-free CAS for single variables.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Never lock(this), lock(typeof(X)), lock("string"). Use private readonly object.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A8</span><span class="card-q-text">CAP &amp; eventual consistency — pick CP or AP for jackpot ledger</span></div>
+    <div class="card-a">
+      <ul>
+        <li>Under partition: choose Consistency or Availability.</li>
+        <li><strong>CP</strong> for ledger writes — refuse rather than diverge.</li>
+        <li><strong>AP</strong> for read paths (leaderboards, dashboards).</li>
+        <li>Eventual consistency must specify <strong>staleness window</strong> + <strong>conflict rule</strong>.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> 'Eventually consistent' with no number is hand-waving. Always quote the window.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A9</span><span class="card-q-text">Compiled vs interpreted — what does .NET do?</span></div>
+    <div class="card-a">
+      <ul>
+        <li>C# → IL (Roslyn) → JIT compiles to machine code on first call (RyuJIT).</li>
+        <li><strong>Tiered JIT</strong> re-compiles hot methods more aggressively.</li>
+        <li><strong>AOT</strong>: build-time native; faster start, less peak.</li>
+        <li><strong>GC</strong>: generational (Gen 0/1/2 + LOH). Server GC for throughput.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> 'Compiled' is binary thinking — modern .NET is JIT with tiered + AOT options.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A10</span><span class="card-q-text">REST vs gRPC vs GraphQL</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>REST</strong>: ubiquity, browser-friendly, cacheable. Public APIs.</li>
+        <li><strong>gRPC</strong>: IDL, HTTP/2, streaming, fast. Internal service-to-service.</li>
+        <li><strong>GraphQL</strong>: client-shaped queries, hard caching, needs query budget.</li>
+        <li>Idempotent: GET / PUT / DELETE; POST needs an idempotency key.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Most 'REST' is RPC-over-HTTP. Don't argue Roy Fielding orthodoxy.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A11</span><span class="card-q-text">Stateful vs stateless apps — what's the cost of state?</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>Stateless</strong>: any instance handles any request → easy horizontal scale.</li>
+        <li><strong>Stateful</strong>: pinned by key (sticky / actor) → low latency, harder to scale and fail over.</li>
+        <li>Externalise state (Redis, SQL) → stateless again, at a network-hop cost.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Sticky sessions look stateless but hide a hot-shard problem.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A12</span><span class="card-q-text">AG vs SAN (SQL Server HA)</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>Always On AG</strong>: each replica owns its data, log-shipped. Sync (RPO=0, latency cost) or async. Readable secondaries. Cross-DC.</li>
+        <li><strong>SAN FCI</strong>: shared disk, active/passive nodes. SAN is SPOF.</li>
+        <li>Modern default = AG. FCI lingers on licensing.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> AG sync mode adds commit latency = replica RTT. State this explicitly.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A13</span><span class="card-q-text">JWT, certs, password hashing — when is JWT wrong?</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>JWT (signed)</strong>: stateless auth. <strong>Can't revoke</strong> before expiry without a denylist (defeats stateless).</li>
+        <li><strong>JWE</strong>: encrypted claims.</li>
+        <li><strong>mTLS</strong> for service-to-service. Prefer short-lived certs.</li>
+        <li>Passwords: <strong>Argon2id</strong> / bcrypt — never plain SHA.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> JWT in localStorage = XSS-stealable. Use httpOnly + SameSite cookies.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A14</span><span class="card-q-text">Test pyramid + kinds</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>Unit</strong> (broad base): ms, no I/O.</li>
+        <li><strong>Integration</strong>: real DB / broker / HTTP.</li>
+        <li><strong>Contract</strong> (Pact): consumer-driven, guards inter-service compatibility.</li>
+        <li><strong>E2E</strong>: full system, slow, few golden flows.</li>
+        <li>Property-based for invariants. Mutation testing to verify the suite.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Ice-cream-cone (lots of E2E, few units) is slow, flaky, expensive.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A15</span><span class="card-q-text">How does async/await actually work?</span></div>
+    <div class="card-a">
+      <ul>
+        <li>Compiler rewrites the method into a <strong>state-machine struct</strong> (IAsyncStateMachine).</li>
+        <li>Each <code>await</code>: save locals, hook continuation onto the Task, return the thread.</li>
+        <li>Continuation runs on captured <strong>SynchronizationContext</strong> unless <code>ConfigureAwait(false)</code>.</li>
+        <li><code>async</code> does <strong>not</strong> spawn threads. CPU-bound work needs <code>Task.Run</code>.</li>
+        <li><code>ValueTask&lt;T&gt;</code> reduces allocations on already-completed paths.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> .Result / .Wait() in a sync context (UI / classic ASP.NET) deadlocks. Use ConfigureAwait(false) in libs.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A16</span><span class="card-q-text">Virtual memory — what does it buy?</span></div>
+    <div class="card-a">
+      <ul>
+        <li>Each process sees an isolated flat address space.</li>
+        <li>MMU + page tables map virtual → physical. <strong>TLB</strong> caches recent translations.</li>
+        <li><strong>Paging</strong>: cold pages swap to disk. Thrashing = death.</li>
+        <li>Memory-mapped files for DBs.</li>
+        <li>Copy-on-write at fork.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> 'OOM' usually means address-space / commit-charge limit, not literal RAM. Read the actual error.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A17</span><span class="card-q-text">Mutex cost — kernel vs user mode</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>Uncontended</strong>: a few cycles (atomic CAS).</li>
+        <li><strong>Contended</strong>: kernel mode → context switch → microseconds.</li>
+        <li>Prefer Interlocked &gt; Monitor &gt; Mutex.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Fine-grained locks can be slower than one coarse lock when contention is low. Measure.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A18</span><span class="card-q-text">Architecture patterns — monolith vs microservices vs event-driven</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>Monolith</strong>: one deployable, ACID-easy. Modular monolith preserves boundaries.</li>
+        <li><strong>Microservices</strong>: independent scale / deploy / language. Cost: distributed txn, network failures, ops.</li>
+        <li><strong>Event-driven</strong>: broker decouples producers/consumers. Hard end-to-end reasoning.</li>
+        <li><strong>N-tier</strong>: presentation / business / data — historic default.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Distributed monolith — services that must deploy together. Worst of both.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A19</span><span class="card-q-text">Hexagonal / Clean architecture</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>Ports &amp; Adapters</strong>: domain at centre, infra at edge behind interfaces.</li>
+        <li><strong>Dependency rule</strong>: dependencies point inward.</li>
+        <li>Domain knows nothing about SQL or HTTP.</li>
+        <li>Pays off for rich domains; ceremony for thin CRUD.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A20</span><span class="card-q-text">UML diagram types — pick one</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>Use case</strong>: actor goals.</li>
+        <li><strong>Activity</strong>: workflow / process with parallelism.</li>
+        <li><strong>Sequence</strong>: time-ordered messages between components. <strong>Most-used</strong>.</li>
+        <li><strong>Class</strong>: static structure, multiplicities, relationships.</li>
+        <li><strong>Component / deployment</strong>: services / physical placement.</li>
+        <li><strong>State</strong>: lifecycle of one entity.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Don't draw a class hierarchy when the question is about a system. Match diagram to question.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A21</span><span class="card-q-text">Scrum vs Kanban vs #noestimates</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>Scrum</strong>: time-boxed sprints, ceremonies. Predictable cadence.</li>
+        <li><strong>Kanban</strong>: continuous flow + WIP limits. Ops-heavy / interrupt-driven work.</li>
+        <li><strong>#noestimates</strong>: slice work uniformly small, count throughput. A lens, not a religion.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A22</span><span class="card-q-text">DevOps — what's in your pipeline?</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>CI</strong>: lint → build → unit → integration → SAST/SCA → container → registry.</li>
+        <li><strong>CD</strong>: dev → smoke → canary → prod, auto rollback on SLI burn.</li>
+        <li><strong>Everything-as-code</strong>: Terraform / Bicep / Helm / pipeline YAML, PR-reviewed like app code.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Click-ops on infra has the same blast radius as code, but skips review.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A23</span><span class="card-q-text">False cache-line invalidation — what is it and how do you fix?</span></div>
+    <div class="card-a">
+      <ul>
+        <li>CPU caches in <strong>64-byte lines</strong>.</li>
+        <li>Two threads writing different vars on the <strong>same line</strong> bounce the line between cores (MESI) → throughput collapses.</li>
+        <li><strong>Fix</strong>: pad hot vars to separate lines.</li>
+        <li>.NET: <code>[StructLayout(Explicit)]</code> + <code>[FieldOffset(64)]</code>. Java: <code>@Contended</code>.</li>
+        <li>Memory model: L1 ~1ns • L2 ~3ns • L3 ~10ns • RAM ~100ns • SSD ~100µs • net ~ms.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Padding without profiling wastes cache bandwidth. Measure with perf counters first.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A24</span><span class="card-q-text">Containers — what's actually shared with the host?</span></div>
+    <div class="card-a">
+      <ul>
+        <li>Containers share the host <strong>kernel</strong>; package app + deps + config.</li>
+        <li>Linux primitives: <strong>namespaces</strong> (isolation), <strong>cgroups</strong> (limits), <strong>union FS</strong> (layers).</li>
+        <li>WSL2 = real Linux kernel in lightweight VM.</li>
+        <li>Pin images by <strong>digest</strong>, not tag.</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> 'Lightweight VM' is wrong threat model — kernel exploit escapes the container.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">A25</span><span class="card-q-text">Kubernetes — Pod / Deployment / Service / Ingress</span></div>
+    <div class="card-a">
+      <ul>
+        <li><strong>Pod</strong>: smallest unit, shared net/storage.</li>
+        <li><strong>Deployment</strong>: rolling updates over a ReplicaSet.</li>
+        <li><strong>Service</strong>: stable virtual IP for selector-matched pods.</li>
+        <li><strong>Ingress</strong>: L7 routing, TLS termination.</li>
+        <li>Probes: liveness (restart), readiness (drop from LB), startup (slow boot).</li>
+      </ul>
+      <div class="trap"><strong>Trap:</strong> Liveness probe that calls a downstream = cascading restarts when dep is sick.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Breadth — B1–B40</div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B1</span><span class="card-q-text">CAP / PACELC</span></div>
+    <div class="card-a">Under partition: pick C or A. Else (no partition): trade Latency vs Consistency. Anchor in domain NFRs.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B2</span><span class="card-q-text">Consistency models — strong / eventual / causal</span></div>
+    <div class="card-a">Strong = always latest (balances). Eventual = converges (catalogues). Causal = preserves cause-effect. Plus read-your-writes / monotonic / session compromises.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B3</span><span class="card-q-text">Consensus (Raft)</span></div>
+    <div class="card-a">One leader per term. Leader replicates log. Entry committed once a majority quorum has it. Safety = quorum + persistent term/log + leader election with jitter.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B4</span><span class="card-q-text">Idempotency — design an idempotent credit API</span></div>
+    <div class="card-a">Client UUID per intent. Server stores (key, result) in dedupe table with TTL. Repeat returns original result without re-executing.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B5</span><span class="card-q-text">Exactly-once vs at-least-once</span></div>
+    <div class="card-a">Network exactly-once is impossible. Achievable as exactly-once processing via at-least-once delivery + idempotent consumer / transactional outbox.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B6</span><span class="card-q-text">Clocks &amp; time</span></div>
+    <div class="card-a">Wall-clock unsafe across nodes (skew). Use logical (Lamport, vector) or hybrid logical clocks (HLC). TrueTime is rare.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B7</span><span class="card-q-text">Leader election &amp; split-brain</span></div>
+    <div class="card-a">Quorum-based election (overlapping majorities). Fencing tokens reject stale-leader writes. Lease-based leadership with renewal.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B8</span><span class="card-q-text">Partitioning &amp; sharding</span></div>
+    <div class="card-a">Sharding key spreads load. Mitigate hot shards: sub-sharding, read replicas, write offload. Consistent hashing reduces reshard cost. Keep common path single-shard.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B9</span><span class="card-q-text">Kafka vs Service Bus</span></div>
+    <div class="card-a">Kafka = log-structured, replay-friendly, partition-ordered. Service Bus = queue/topic, per-message ack, sessions for ordering. Kafka pushes cost to storage; SB to per-op.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B10</span><span class="card-q-text">Ordering guarantees</span></div>
+    <div class="card-a">Kafka: partition by key → ordered within. Service Bus: sessions keyed → FIFO consumer. Process synchronously per key downstream.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B11</span><span class="card-q-text">Back-pressure</span></div>
+    <div class="card-a">Bounded queues (push back). Scale consumers. Shed low-priority load. Autoscale on queue-depth. Never unbounded buffers.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B12</span><span class="card-q-text">DLQ &amp; poison messages</span></div>
+    <div class="card-a">After N failures → DLQ with full context. Alerts on non-zero depth. Replay tooling. Classify: transient (retry), poison (DLQ), data-quality (quarantine).</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B13</span><span class="card-q-text">OLTP vs OLAP</span></div>
+    <div class="card-a">OLTP = row-oriented, normalised, point writes / short reads. OLAP = columnar, denormalised, wide scans + aggregates. Move via CDC → ClickHouse / Synapse.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B14</span><span class="card-q-text">SQL indexing</span></div>
+    <div class="card-a">Indexes speed reads, slow writes, cost storage. Add when plan shows scan/lookup. Covering indexes eliminate lookups. Composite: leftmost-prefix. Drop unused.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B15</span><span class="card-q-text">Transaction isolation levels</span></div>
+    <div class="card-a">Read Committed (no dirty) → Repeatable Read (no non-repeatable) → Snapshot/MVCC (consistent snapshot, no blocking) → Serializable (full).</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B16</span><span class="card-q-text">Sharding vs replication</span></div>
+    <div class="card-a">Replication = same data many copies (read scale + HA). Sharding = different data on different nodes (write scale). Usually combined: shard then replicate.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B17</span><span class="card-q-text">ClickHouse — why for jackpot analytics?</span></div>
+    <div class="card-a">Columnar + vectorised. MergeTree family. Materialised views maintain aggregates on insert → second-fresh dashboards. Not OLTP. Batch inserts, never per-row.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B18</span><span class="card-q-text">Query tuning a regression</span></div>
+    <div class="card-a">Capture actual plan, compare to last-known-good. Check parameter sniffing, stale stats, data skew. Fix: update stats, add index, OPTION RECOMPILE, Query Store force plan.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B19</span><span class="card-q-text">Circuit breakers</span></div>
+    <div class="card-a">Closed → Open (fail fast) → Half-open (probe). Driven by failure rate or latency. Polly composes breaker + retry + timeout. Half-open probe policy matters.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B20</span><span class="card-q-text">Timeouts &amp; retries</span></div>
+    <div class="card-a">Timeouts shorter than upstream's. Exponential back-off + jitter. Cap retries. Distinguish idempotent (safe) from non-idempotent.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B21</span><span class="card-q-text">Bulkheads</span></div>
+    <div class="card-a">Isolate resources per tenant/class so one noisy tenant can't starve others. Separate thread/connection pools or pod boundaries. e.g. VIP wager pool.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B22</span><span class="card-q-text">Chaos testing</span></div>
+    <div class="card-a">Inject failures with blast-radius control. Steady-state hypothesis tied to SLO. Stage → game days → automated chaos in prod. Without SLOs it's theatre.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B23</span><span class="card-q-text">OWASP Top 10 — defenses</span></div>
+    <div class="card-a">Injection: parameterised queries + least-privilege. Broken auth: OIDC + MFA + rate limit. SSRF: outbound allowlist, block metadata endpoints, careful URL parsing.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B24</span><span class="card-q-text">OIDC / OAuth2 PKCE</span></div>
+    <div class="card-a">Client sends code_challenge (SHA256 of code_verifier). IdP returns code. Client exchanges code + verifier for tokens. Defeats code interception on public clients.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B25</span><span class="card-q-text">Crypto basics</span></div>
+    <div class="card-a">AES-GCM = symmetric, bulk. RSA/ECDSA = asymmetric, slow, key-exchange + signatures. SHA-256 = hash, integrity. Argon2id/bcrypt for passwords. Never home-brew.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B26</span><span class="card-q-text">TLS 1.3</span></div>
+    <div class="card-a">1-RTT handshake (0-RTT for resumption — replay risk). Removed legacy ciphers. All post-ServerHello messages encrypted. PFS mandatory.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B27</span><span class="card-q-text">Secrets management</span></div>
+    <div class="card-a">Never in source. Key Vault / HashiCorp Vault, RBAC-scoped, per-env. Prefer short-lived managed-identity tokens. Rotate automatically. Avoid env-vars (crash dumps leak).</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B28</span><span class="card-q-text">TCP handshake &amp; lifecycle</span></div>
+    <div class="card-a">SYN / SYN-ACK / ACK establishes seq numbers + windows. Congestion control (Reno/CUBIC/BBR). FIN/ACK + TIME_WAIT 2×MSL — can exhaust ephemeral ports under high churn.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B29</span><span class="card-q-text">HTTP/1.1 vs 2 vs 3</span></div>
+    <div class="card-a">1.1: connection-level head-of-line. 2: multiplexed streams over one TCP, binary, HPACK. 3: QUIC over UDP, no TCP HOL, faster handshake.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B30</span><span class="card-q-text">L4 vs L7 load balancing</span></div>
+    <div class="card-a">L4 routes IP:port, fast, dumb. L7 routes by host/path/header, can do auth/retries/canary. Pattern: L4 front + L7 inside platform. L4 hot-spots gRPC connections.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B31</span><span class="card-q-text">DNS TTL trade-offs</span></div>
+    <div class="card-a">Low TTL = faster failover, more traffic. High TTL = cheaper, slower to react. Resolver caches and runtime caches (older Java/.NET) bound real reactivity.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B32</span><span class="card-q-text">Logs / metrics / traces</span></div>
+    <div class="card-a">Logs: high-cardinality narrative, expensive. Metrics: low-cardinality, dashboards/alerts. Traces: per-request causal chain across services. OpenTelemetry standard.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B33</span><span class="card-q-text">RED &amp; USE methods</span></div>
+    <div class="card-a">RED (services): Rate, Errors, Duration. USE (resources): Utilisation, Saturation, Errors. Per-endpoint RED beats service-wide averages.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B34</span><span class="card-q-text">SLO / SLI / SLA + error budget</span></div>
+    <div class="card-a">SLI = measure. SLO = internal target. SLA = contractual (with consequences). Error budget = 1 − SLO. Burn fast → slow deploys; fat → ship.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B35</span><span class="card-q-text">Managed vs self-hosted</span></div>
+    <div class="card-a">Managed buys ops at premium. Self-host buys control + cost-at-scale at ops cost. Decide on criticality, expertise, compliance. 'Managed' ≠ zero-ops (you still own schema, quotas, cost).</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B36</span><span class="card-q-text">AKS / Kubernetes basics</span></div>
+    <div class="card-a">Pod evicted under memory pressure: check requests vs limits, QoS class (BestEffort → Burstable → Guaranteed), node events, VPA/HPA history. CPU throttling is silent.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B37</span><span class="card-q-text">Terraform patterns</span></div>
+    <div class="card-a">State must be remote (Azure Storage) with lock + versioning. Module boundaries = blast radius. Drift detection: scheduled plan in CI. Don't store secrets in state.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B38</span><span class="card-q-text">Trunk-based development</span></div>
+    <div class="card-a">Short-lived branches, frequent merges → smaller diffs, easier review. Feature flags decouple deploy from release. Requires strong CI + flag hygiene.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B39</span><span class="card-q-text">Blue-green / canary / feature flags</span></div>
+    <div class="card-a">Blue-green = swap whole env, instant rollback, double infra. Canary = traffic slice, monitor, progress. Flags = runtime per-user, granular but ops cost. Stale flags rot.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-q"><span class="card-id">B40</span><span class="card-q-text">async vs threads (.NET)</span></div>
+    <div class="card-a">async for I/O-bound (frees thread). Dedicated thread for long-running CPU work. Avoid Task.Run in ASP.NET request paths for I/O. ConfigureAwait(false) in libraries.</div>
+  </div>
+
+</div>
+</body>
+</html>
